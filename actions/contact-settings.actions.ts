@@ -11,7 +11,18 @@ export async function getContactSettings(): Promise<ContactSettings | null> {
 
 export async function createContactSettings(data: ContactSettings): Promise<ContactSettings> {
   const validatedData = contactSettingsSchema.parse(data);
-  const [inserted] = await db.insert(contactSettings).values(validatedData).returning();
+  
+  // Gerekli alanlar için varsayılan değerler sağlayın
+  const insertData = {
+    address: validatedData.address || '',
+    city: validatedData.city || '',
+    district: validatedData.district || '',
+    email: validatedData.email || '',
+    phone: validatedData.phone || '',
+    fax: validatedData.fax, // Opsiyonel, varsayılan değer gerekmez
+  };
+
+  const [inserted] = await db.insert(contactSettings).values(insertData).returning();
   return inserted as ContactSettings;
 }
 
