@@ -6,18 +6,18 @@ export const mediaFileSchema = z.object({
   size: z.number(),
   url: z.string(),
   createdAt: z.date(),
-  alternativeText: z.string().optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
+  alternativeText: z.string().nullable(),
+  title: z.string().nullable(),
+  description: z.string().nullable(),
 });
 
 export const newMediaFileSchema = mediaFileSchema.omit({ id: true, createdAt: true });
 
 export const uploadMediaFileSchema = z.object({
   file: z.instanceof(File),
-  alternativeText: z.string().optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
+  alternativeText: z.string().nullable(),
+  title: z.string().nullable(),
+  description: z.string().nullable(),
 });
 
 export type MediaFile = z.infer<typeof mediaFileSchema>;
