@@ -1,19 +1,18 @@
 "use server"
 
 import { eq } from 'drizzle-orm';
-import { db } from '@/lib/db';  // Drizzle veritabanı bağlantınızı içe aktarın
-import { posts } from '@/lib/schema';  // Drizzle şemanızı içe aktarın
+import { db } from '@/lib/db';
+import { posts } from '@/lib/schema';
 import { Post, createPostSchema, updatePostSchema } from '@/schemas/postsSchema';
-
 
 export async function createPost(postData: Omit<Post, 'id' | 'createdAt' | 'updatedAt'>) {
   try {
     const validatedData = createPostSchema.parse({
       ...postData,
-      publishedAt: postData.publishedAt || null, // Eğer publishedAt gönderilmemişse null olarak ayarla
+      publishedAt: postData.publishedAt || null,
     });
     const [newPost] = await db.insert(posts).values(validatedData).returning();
-    return newPost;
+    return newPost as Post;
   } catch (error) {
     console.error('Error creating post:', error);
     throw error;
@@ -28,7 +27,7 @@ export async function updatePost(id: number, postData: Partial<Post>) {
       .set({ ...validatedData, updatedAt: new Date() })
       .where(eq(posts.id, id))
       .returning();
-    return updatedPost;
+    return updatedPost as Post;
   } catch (error) {
     console.error('Error updating post:', error);
     throw error;
@@ -38,7 +37,7 @@ export async function updatePost(id: number, postData: Partial<Post>) {
 export async function getPostById(id: number): Promise<Post | null> {
   try {
     const [post] = await db.select().from(posts).where(eq(posts.id, id));
-    return post || null;
+    return post as Post || null;
   } catch (error) {
     console.error('Error fetching post by id:', error);
     throw error;
@@ -47,7 +46,8 @@ export async function getPostById(id: number): Promise<Post | null> {
 
 export async function getPosts(): Promise<Post[]> {
   try {
-    return await db.select().from(posts).orderBy(posts.createdAt);
+    const result = await db.select().from(posts).orderBy(posts.createdAt);
+    return result as Post[];
   } catch (error) {
     console.error('Error fetching posts:', error);
     throw error;
@@ -69,7 +69,7 @@ export async function publishPost(slug: string): Promise<Post | null> {
     .set({ publishedAt: new Date() })
     .where(eq(posts.slug, slug))
     .returning();
-  return publishedPost || null;
+  return publishedPost as Post || null;
 }
 
 export async function unpublishPost(slug: string): Promise<Post | null> {
@@ -78,13 +78,13 @@ export async function unpublishPost(slug: string): Promise<Post | null> {
     .set({ publishedAt: null })
     .where(eq(posts.slug, slug))
     .returning();
-  return unpublishedPost || null;
+  return unpublishedPost as Post || null;
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
     const [post] = await db.select().from(posts).where(eq(posts.slug, slug));
-    return post || null;
+    return post as Post || null;
   } catch (error) {
     console.error('Error fetching post by slug:', error);
     throw error;

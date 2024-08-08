@@ -6,13 +6,13 @@ import { contactSettingsSchema, ContactSettings } from '@/schemas/contactSetting
 
 export async function getContactSettings(): Promise<ContactSettings | null> {
   const settings = await db.select().from(contactSettings).limit(1);
-  return settings[0] || null;
+  return settings[0] as ContactSettings || null;
 }
 
 export async function createContactSettings(data: ContactSettings): Promise<ContactSettings> {
   const validatedData = contactSettingsSchema.parse(data);
   const [inserted] = await db.insert(contactSettings).values(validatedData).returning();
-  return inserted;
+  return inserted as ContactSettings;
 }
 
 export async function updateContactSettings(id: number, data: Partial<ContactSettings>): Promise<ContactSettings> {
@@ -22,7 +22,7 @@ export async function updateContactSettings(id: number, data: Partial<ContactSet
     .set(validatedData)
     .where(eq(contactSettings.id, id))
     .returning();
-  return updated;
+  return updated as ContactSettings;
 }
 
 export async function deleteContactSettings(id: number): Promise<void> {
