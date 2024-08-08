@@ -51,7 +51,6 @@ export async function addGoogleForm(formData: FormData) {
     revalidatePath('/whatsapp-form')
     return newForm
   }
-  
   export async function updateWhatsAppForm(data: WhatsAppFormData): Promise<WhatsAppForm> {
     if (typeof data.id !== 'number') {
       throw new Error('Form ID is required for update')

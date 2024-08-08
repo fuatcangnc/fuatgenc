@@ -47,7 +47,7 @@ const TopBarForm = () => {
             <input {...field} className="w-full p-2 border rounded" />
           )}
         />
-        {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
+        {errors.phone && <p className="text-red-500">{errors.phone.message as string}</p>}
       </div>
 
       <div>
@@ -59,7 +59,7 @@ const TopBarForm = () => {
             <input {...field} className="w-full p-2 border rounded" />
           )}
         />
-        {errors.getHelp && <p className="text-red-500">{errors.getHelp.message}</p>}
+        {errors.getHelp && <p className="text-red-500">{errors.getHelp.message as string}</p>}
       </div>
 
       <div>
@@ -84,10 +84,10 @@ const TopBarForm = () => {
               <button type="button" onClick={() => remove(index)} className="p-2 bg-red-500 text-white rounded">Remove</button>
             </div>
             {errors.socialLinks?.[index]?.platform && (
-              <p className="text-red-500">{errors.socialLinks[index].platform?.message}</p>
+              <p className="text-red-500">{errors.socialLinks[index].platform?.message as string}</p>
             )}
             {errors.socialLinks?.[index]?.url && (
-              <p className="text-red-500">{errors.socialLinks[index].url?.message}</p>
+              <p className="text-red-500">{errors.socialLinks[index].url?.message as string}</p>
             )}
           </div>
         ))}

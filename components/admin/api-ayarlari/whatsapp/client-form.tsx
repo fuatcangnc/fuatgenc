@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { whatsAppFormSchema, WhatsAppFormData } from '@/schemas/apiAyarlariSchema'
+import { whatsAppFormSchema, WhatsAppFormData, NewWhatsAppForm } from '@/schemas/apiAyarlariSchema'
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -42,7 +42,15 @@ export default function WhatsAppClientForm({ initialData }: WhatsAppClientFormPr
     setIsSubmitting(true)
     try {
       console.log("Submitting form with values:", values);
-      const result = values.id ? await updateWhatsAppForm(values) : await createWhatsAppForm(values)
+      const result = values.id 
+        ? await updateWhatsAppForm(values) 
+        : await createWhatsAppForm({
+            whatsappMessage: values.whatsappMessage,
+            customerMessage: values.customerMessage,
+            personelName: values.personelName,
+            whatsappNumber: values.whatsappNumber,
+            status: values.status
+          } as NewWhatsAppForm);
       console.log("Form submission result:", result);
       toast({
         title: "Başarılı!",
@@ -62,7 +70,6 @@ export default function WhatsAppClientForm({ initialData }: WhatsAppClientFormPr
       setIsSubmitting(false)
     }
   }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

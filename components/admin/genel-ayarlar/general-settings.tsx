@@ -10,7 +10,7 @@ import { GeneralSettings } from '@/schemas/generalSettingsSchema'
 import { getGeneralSettings, createGeneralSettings, updateGeneralSettings } from '@/actions/general-settings.actions'
 import { useToast } from "@/components/ui/use-toast"
 
-export const GeneralSettings = () => {
+export const GeneralSettingsForm = () => {
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false)
   const [settings, setSettings] = useState<GeneralSettings>({
     siteTitle: '',
@@ -48,8 +48,8 @@ export const GeneralSettings = () => {
         ...settings,
         siteIcon: settings.siteIcon || null,
       };
-      if (settings.id) {
-        await updateGeneralSettings(settings.id, dataToSend)
+      if (settings?.id) {
+        await updateGeneralSettings(settings?.id, dataToSend)
       } else {
         await createGeneralSettings(dataToSend)
       }
@@ -124,4 +124,4 @@ export const GeneralSettings = () => {
   )
 }
 
-export default GeneralSettings
+export default GeneralSettingsForm

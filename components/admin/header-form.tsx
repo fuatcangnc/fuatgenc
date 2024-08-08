@@ -95,7 +95,11 @@ const DraggableMenuItem = ({ index, moveMenu, menuItem, control, removeMenu, err
   });
 
   return (
-    <div ref={(node) => drag(drop(node))} style={{ opacity: isDragging ? 0.5 : 1 }} className="space-y-2 mb-2 p-2 border rounded">
+    <div ref={(node) => {
+      if (drag && drop) {
+        drag(drop(node));
+      }
+    }}  style={{ opacity: isDragging ? 0.5 : 1 }} className="space-y-2 mb-2 p-2 border rounded">
       <div className="flex space-x-2">
         <span className="cursor-move">☰</span>
         <Controller
