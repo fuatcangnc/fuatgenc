@@ -40,16 +40,12 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     "description": post.excerpt,
     "image": post.featuredImage,
     "datePublished": post.publishedAt,
-    "dateModified": post.updatedAt
-  };
-  
-  // Eğer author bilgisi mevcutsa, schema'ya ekle
-  if (post?.author && post?.author.name) {
-    articleSchema.author = {
+    "dateModified": post.updatedAt,
+    "author": {
       "@type": "Person",
-      "name": post?.author.name
-    };
-  }
+      "name": "Shana" // Statik isim "John Doe"
+    }
+  };
   return (
     <>
       <Script
@@ -98,7 +94,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
                 <p className="text-gray-600">{post?.excerpt}</p>
                 <time
                   className="text-sm text-gray-500 block"
-                  dateTime={post?.publishedAt}
+                  dateTime={post?.publishedAt?.toString()}
                 >
                   Published: {new Date(post?.publishedAt).toLocaleString()}
                 </time>
