@@ -13,7 +13,7 @@ export async function getGeneralSettings(): Promise<GeneralSettings | null> {
 export async function createGeneralSettings(data: GeneralSettings): Promise<GeneralSettings> {
   const validatedData = generalSettingsSchema.parse(data);
   const [inserted] = await db.insert(generalSettings).values(validatedData).returning();
-  return inserted as GeneralSettings;
+  return inserted;
 }
 
 export async function updateGeneralSettings(id: number, data: Partial<GeneralSettings>): Promise<GeneralSettings> {
@@ -23,7 +23,7 @@ export async function updateGeneralSettings(id: number, data: Partial<GeneralSet
     .set({ ...validatedData, updatedAt: new Date() })
     .where(eq(generalSettings.id, id))
     .returning();
-  return updated as GeneralSettings;
+  return updated;
 }
 
 export async function deleteGeneralSettings(id: number): Promise<void> {
