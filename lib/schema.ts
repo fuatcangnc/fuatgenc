@@ -108,6 +108,8 @@ export const mediaFiles = pgTable('media_files', {
   title: varchar('title', { length: 255 }),
   description: varchar('description', { length: 1000 }),
 });
+export type MediaFile = typeof mediaFiles.$inferSelect
+export type NewMediaFile = typeof mediaFiles.$inferInsert
 
 export const generalSettings = pgTable('general_settings', {
   id: serial('id').primaryKey(),

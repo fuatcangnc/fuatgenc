@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db';
 import { mediaFiles } from '@/lib/schema';
-import { MediaFile, NewMediaFile, uploadMediaFileSchema } from '@/schemas/mediaLibrarySchema';
+import { newMediaFileSchema, uploadMediaFileSchema, UploadMediaFile,MediaFile, NewMediaFile } from '@/schemas/mediaLibrarySchema';
 import { eq } from 'drizzle-orm';
 import { writeFile, unlink } from 'fs/promises';
 import path from 'path';
@@ -29,19 +29,28 @@ export async function uploadFile(formData: FormData) {
     await writeFile(filePath, Buffer.from(buffer));
 
     const newFile: NewMediaFile = {
-      ...fileData,
       name: uniqueFileName,
       size: file.size,
       url: `/uploads/${uniqueFileName}`,
+      ...fileData,
     };
 
-    const [insertedFile] = await db.insert(mediaFiles).values(newFile).returning();
+    const validatedFile = newMediaFileSchema.parse(newFile);
+    const [insertedFile] = await db.insert(mediaFiles).values({
+      name: validatedFile.name,
+      size: validatedFile.size,
+      url: validatedFile.url,
+      alternativeText: validatedFile.alternativeText,
+      title: validatedFile.title,
+      description: validatedFile.description,
+    }).returning();
     return insertedFile;
   } catch (error) {
     console.error('Error uploading file:', error);
     throw error;
   }
 }
+
 
 export async function deleteFile(fileName: string) {
   const filePath = path.join(UPLOAD_DIR, fileName);
