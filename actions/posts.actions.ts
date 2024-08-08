@@ -7,26 +7,40 @@ import { Post, createPostSchema, updatePostSchema } from '@/schemas/postsSchema'
 
 export async function createPost(postData: Omit<Post, 'id' | 'createdAt' | 'updatedAt'>) {
   try {
-    const validatedData = createPostSchema.parse({
-      ...postData,
-      publishedAt: postData.publishedAt || null,
-    });
-    const [newPost] = await db.insert(posts).values(validatedData).returning();
-    return newPost as Post;
+    const newPost: Required<Omit<Post, 'id' | 'createdAt' | 'updatedAt'>> = {
+      title: postData.title,      // Zorunlu alan
+      slug: postData.slug,        // Zorunlu alan
+      content: postData.content || "",      // Opsiyonel alanı boş string olarak belirtiyoruz
+      excerpt: postData.excerpt || "",      // Opsiyonel alan
+      featuredImage: postData.featuredImage || "", // Opsiyonel alan
+      isFeatured: postData.isFeatured ?? false, // Opsiyonel alanı varsayılan değer olarak false yapıyoruz
+      publishedAt: postData.publishedAt || null,  // Opsiyonel alanı null olarak belirtiyoruz
+      metaTitle: postData.metaTitle || "",  // Opsiyonel alan
+      metaDescription: postData.metaDescription || "", // Opsiyonel alan
+    };
+
+    // Veriyi veritabanına ekliyoruz
+    const [insertedPost] = await db.insert(posts).values(newPost).returning();
+
+    return insertedPost as Post;
   } catch (error) {
     console.error('Error creating post:', error);
     throw error;
   }
 }
-
 export async function updatePost(id: number, postData: Partial<Post>) {
   try {
     const validatedData = updatePostSchema.parse(postData);
+    // 'updatedAt' alanını 'validatedData' içine ekliyoruz
+    const updatedData = { ...validatedData, updatedAt: new Date() };
+
+    // updatedData nesnesini veritabanına gönderiyoruz
     const [updatedPost] = await db
       .update(posts)
-      .set({ ...validatedData, updatedAt: new Date() })
+      .set(updatedData)
       .where(eq(posts.id, id))
       .returning();
+
     return updatedPost as Post;
   } catch (error) {
     console.error('Error updating post:', error);
@@ -63,23 +77,7 @@ export async function deletePost(id: number): Promise<void> {
   }
 }
 
-export async function publishPost(slug: string): Promise<Post | null> {
-  const [publishedPost] = await db
-    .update(posts)
-    .set({ publishedAt: new Date() })
-    .where(eq(posts.slug, slug))
-    .returning();
-  return publishedPost as Post || null;
-}
 
-export async function unpublishPost(slug: string): Promise<Post | null> {
-  const [unpublishedPost] = await db
-    .update(posts)
-    .set({ publishedAt: null })
-    .where(eq(posts.slug, slug))
-    .returning();
-  return unpublishedPost as Post || null;
-}
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
