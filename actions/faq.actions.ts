@@ -1,25 +1,17 @@
-'use server'
-
-import { db } from '@/lib/schema'
+"use server"
+import { sikSorulanSorularSchema, SikSorulanSorular } from '@/schemas/faqSchema'
 import { sikSorulanSorular } from '@/lib/schema'
-import { eq } from 'drizzle-orm'
+import { db } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
-import { sikSorulanSorularSchema } from '@/schemas/faqSchema'
-
-export async function getSikSorulanSorular() {
-  try {
-    const sorular = await db.select().from(sikSorulanSorular)
-    return { success: true, data: sorular }
-  } catch (error) {
-    console.error('Sık sorulan sorular alınırken hata oluştu:', error)
-    return { success: false, error: 'Sorular alınamadı' }
-  }
-}
-
-export async function createSikSorulanSoru(data: typeof sikSorulanSorularSchema._type) {
+import { eq } from 'drizzle-orm'
+type SikSorulanSorularInput = Omit<SikSorulanSorular, 'id' | 'createdAt' | 'updatedAt'>
+export async function createSikSorulanSoru(data: SikSorulanSorularInput) {
   try {
     const validatedData = sikSorulanSorularSchema.parse(data)
-    const [newSoru] = await db.insert(sikSorulanSorular).values(validatedData).returning()
+    const [newSoru] = await db.insert(sikSorulanSorular).values({
+      soruAdi: validatedData.soruAdi,
+      icerik: validatedData.icerik,
+    }).returning()
     revalidatePath('/admin/sik-sorulan-sorular')
     return { success: true, data: newSoru }
   } catch (error) {
@@ -28,11 +20,15 @@ export async function createSikSorulanSoru(data: typeof sikSorulanSorularSchema.
   }
 }
 
-export async function updateSikSorulanSoru(id: number, data: Partial<typeof sikSorulanSorularSchema._type>) {
+export async function updateSikSorulanSoru(id: number, data: Partial<SikSorulanSorularInput>) {
   try {
     const validatedData = sikSorulanSorularSchema.partial().parse(data)
     const [updatedSoru] = await db.update(sikSorulanSorular)
-      .set({ ...validatedData, updatedAt: new Date() })
+      .set({
+        soruAdi: validatedData.soruAdi,
+        icerik: validatedData.icerik,
+        durumu: validatedData.durumu,
+      })
       .where(eq(sikSorulanSorular.id, id))
       .returning()
     revalidatePath('/admin/sik-sorulan-sorular')
@@ -43,6 +39,17 @@ export async function updateSikSorulanSoru(id: number, data: Partial<typeof sikS
   }
 }
 
+
+
+export async function getSikSorulanSorular() {
+  try {
+    const sorular = await db.select().from(sikSorulanSorular)
+    return { success: true, data: sorular }
+  } catch (error) {
+    console.error('Sık sorulan sorular alınırken hata oluştu:', error)
+    return { success: false, error: 'Sorular alınamadı' }
+  }
+}
 export async function deleteSikSorulanSoru(id: number) {
   try {
     await db.delete(sikSorulanSorular).where(eq(sikSorulanSorular.id, id))
