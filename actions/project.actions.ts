@@ -30,25 +30,30 @@ export async function createProject(data: ProjectInput) {
   }
 }
 
-export async function updateProject(id: number, data: Partial<ProjectInput>) {
+export async function updateProject(id: number, formData: FormData) {
   try {
-    const validatedData = projectSchema.partial().parse(data)
+    const data = Object.fromEntries(formData);
+    const validatedData = projectSchema.partial().parse(data);
+    
     const updateData = {
       ...(validatedData.name && { name: validatedData.name }),
       ...(validatedData.status && { status: validatedData.status }),
       ...(validatedData.startDate && { startDate: new Date(validatedData.startDate) }),
-      ...(validatedData.endDate && { endDate: new Date(validatedData.endDate) }),
-      ...(validatedData.image && { image: validatedData.image }),
-    }
+      ...(validatedData.endDate && { endDate: validatedData.endDate ? new Date(validatedData.endDate) : null }),
+      // Image işlemi burada yapılmalı, örneğin:
+      // ...(formData.get('image') && { image: await saveImage(formData.get('image') as File) }),
+    };
+
     const [updatedProject] = await db.update(projects)
       .set(updateData)
       .where(eq(projects.id, id))
-      .returning()
-    revalidatePath('/admin/projects')
-    return { success: true, data: updatedProject }
+      .returning();
+
+    revalidatePath('/admin/proje-yonetimi');
+    return { success: true, data: updatedProject };
   } catch (error) {
-    console.error('Proje güncellenirken hata oluştu:', error)
-    return { success: false, error: 'Proje güncellenemedi' }
+    console.error('Proje güncellenirken hata oluştu:', error);
+    return { success: false, error: 'Proje güncellenemedi' };
   }
 }
 

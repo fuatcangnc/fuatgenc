@@ -77,7 +77,7 @@ export default function EditProjectPage({ params }: { params: { id: string } }) 
         formData.append(key, data[key]?.toString() || "")
       }
     })
-
+  
     const result = await updateProject(parseInt(params.id), formData)
     if (result.success) {
       router.push("/admin/proje-yonetimi")
