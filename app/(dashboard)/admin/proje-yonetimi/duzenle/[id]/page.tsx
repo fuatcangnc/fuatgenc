@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { projectSchema } from "@/schemas/projectSchema"
+import { projectFormSchema, ProjectFormData } from "@/schemas/projectSchema"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,21 +24,20 @@ import {
 } from "@/components/ui/select"
 import Image from "next/image"
 import { getProjectById, updateProject } from "@/actions/project.actions"
-import { Project } from "@/types"
 
 export default function EditProjectPage({ params }: { params: { id: string } }) {
   const router = useRouter()
-  const [project, setProject] = useState<Project | null>(null)
+  const [project, setProject] = useState<ProjectFormData | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
 
-  const form = useForm<Project>({
-    resolver: zodResolver(projectSchema),
+  const form = useForm<ProjectFormData>({
+    resolver: zodResolver(projectFormSchema),
     defaultValues: {
       name: "",
-      status: "Planlama",
+      status: "",
       startDate: "",
       endDate: "",
-      image: null,
+      image: "",
     },
   })
 
@@ -58,7 +57,7 @@ export default function EditProjectPage({ params }: { params: { id: string } }) 
     fetchProject()
   }, [params.id, form])
 
-  const onSubmit = async (data: Project) => {
+  const onSubmit = async (data: ProjectFormData) => {
     const formData = new FormData()
     Object.keys(data).forEach((key) => {
       if (key === "image" && data[key] instanceof File) {
