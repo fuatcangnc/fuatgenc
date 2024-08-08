@@ -5,7 +5,7 @@ export const sikSorulanSorularSchema = z.object({
   soruAdi: z.string().min(2, {
     message: "Soru adı en az 2 karakter olmalıdır.",
   }),
-  durumu: z.boolean(),
+  durumu: z.boolean().default(true),
   icerik: z.string().min(10, {
     message: "İçerik en az 10 karakter olmalıdır.",
   }),
