@@ -44,9 +44,20 @@ export default function EditProjectPage({ params }: { params: { id: string } }) 
   useEffect(() => {
     const fetchProject = async () => {
       const result = await getProjectById(parseInt(params.id))
-      if (result.success) {
-        setProject(result.data)
-        form.reset(result.data)
+      if (result.success && result.data) {
+        const formattedProject: ProjectFormData = {
+          name: result.data.name,
+          status: result.data.status,
+          startDate: result.data.startDate instanceof Date 
+            ? result.data.startDate.toISOString().split('T')[0] 
+            : result.data.startDate,
+          endDate: result.data.endDate instanceof Date 
+            ? result.data.endDate.toISOString().split('T')[0] 
+            : result.data.endDate,
+          image: result.data.image,
+        }
+        setProject(formattedProject)
+        form.reset(formattedProject)
         if (result.data.image) {
           setImagePreview(`/uploads/proje-yonetimi/${result.data.image}`)
         }
