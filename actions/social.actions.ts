@@ -1,7 +1,6 @@
 "use server"
 import { db } from "@/lib/db";
 import { socialMediaTable } from "@/lib/schema";
-import { SocialMedia, NewSocialMedia } from "@/schemas/socialSchemas";
 import { eq } from "drizzle-orm";
 import { socialMediaSchema } from "@/schemas/socialSchemas";
 import { z } from "zod";
@@ -11,12 +10,19 @@ export async function addSocialMedia(formData: FormData) {
     const icon = formData.get('icon');
     const social_link = formData.get('social_link');
 
+    if (typeof icon !== 'string' || typeof social_link !== 'string') {
+      throw new Error('Invalid form data');
+    }
+
     const validatedData = socialMediaSchema.parse({
-      icon: icon,
-      social_link: social_link,
+      icon,
+      social_link,
     });
 
-    await db.insert(socialMediaTable).values(validatedData);
+    await db.insert(socialMediaTable).values({
+      icon: validatedData.icon,
+      social_link: validatedData.social_link,
+    });
     return { success: true };
   } catch (error) {
     if (error instanceof z.ZodError) {

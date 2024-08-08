@@ -41,7 +41,7 @@ export async function updateTestimonial(id: number, data: Partial<YeniMusteriYor
   try {
     const [updatedTestimonial] = await db
       .update(musteriYorumlari)
-      .set({ ...data, updatedAt: new Date() })
+      .set(data)
       .where(eq(musteriYorumlari.id, id))
       .returning();
     return updatedTestimonial;

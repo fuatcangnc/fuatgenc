@@ -7,4 +7,3 @@ export const socialMediaSchema = z.object({
 
 export type SocialMedia = z.infer<typeof socialMediaSchema> & { id: number };
 export type NewSocialMedia = z.infer<typeof socialMediaSchema>;
-
