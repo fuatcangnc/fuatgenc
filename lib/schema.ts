@@ -11,10 +11,7 @@ import {
 } from "drizzle-orm/pg-core"
 import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
-import type { AdapterAccountType } from "next-auth/adapters"
-import { genSaltSync, hashSync } from "bcrypt-ts"
-import { eq } from "drizzle-orm"
-import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import * as z from 'zod';
 import { sikSorulanSorularSchema } from '@/schemas/faqSchema';
 export type SikSorulanSorularSchemaType = z.infer<typeof sikSorulanSorularSchema>;
@@ -156,4 +153,4 @@ export const musteriYorumlari = pgTable("musteri_yorumlari", {
 });
 
 export type MusteriYorumu = InferSelectModel<typeof musteriYorumlari>;
-export type YeniMusteriYorumu = InferInsertModel<typeof musteriYorumlari>;
+export type YeniMusteriYorumu = Omit<MusteriYorumu, 'id' | 'createdAt' | 'updatedAt'>;

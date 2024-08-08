@@ -50,14 +50,14 @@ export function YeniMusteriForm() {
   async function onSubmit(values: MusteriYorumuFormValues) {
     try {
       console.log("Form values:", values);
-      console.log("musteriResmi type:", typeof values.musteriResmi);
-
+      
       await createTestimonial({
         musteriAdi: values.musteriAdi,
         musteriAciklamasi: values.musteriAciklamasi,
-        musteriResmi: values.musteriResmi,
+        musteriResmi: values.musteriResmi || null,
         durum: values.durum,
       });
+      
       toast({
         title: "Başarılı",
         description: "Müşteri yorumu başarıyla eklendi.",
