@@ -111,7 +111,7 @@ export const mediaFiles = pgTable('media_files', {
 
 export const generalSettings = pgTable('general_settings', {
   id: serial('id').primaryKey(),
-  siteTitle: varchar('site_title', { length: 255 }).notNull(),
+  siteTitle: varchar('site_title', { length: 255 }),
   tagline: text('tagline'),
   siteIcon: varchar('site_icon', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow(),

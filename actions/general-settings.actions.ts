@@ -12,7 +12,11 @@ export async function getGeneralSettings(): Promise<GeneralSettings | null> {
 
 export async function createGeneralSettings(data: GeneralSettings): Promise<GeneralSettings> {
   const validatedData = generalSettingsSchema.parse(data);
-  const [inserted] = await db.insert(generalSettings).values(validatedData).returning();
+  const [inserted] = await db.insert(generalSettings).values({
+    siteTitle: validatedData.siteTitle,
+    tagline: validatedData.tagline,
+    siteIcon: validatedData.siteIcon,
+  }).returning();
   return inserted;
 }
 
