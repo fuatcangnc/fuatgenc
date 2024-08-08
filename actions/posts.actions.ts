@@ -1,6 +1,6 @@
 "use server"
 
-import { eq } from 'drizzle-orm';
+import { eq,desc } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { posts } from '@/lib/schema';
 import { Post, createPostSchema, updatePostSchema } from '@/schemas/postsSchema';
@@ -58,10 +58,15 @@ export async function getPostById(id: number): Promise<Post | null> {
   }
 }
 
-export async function getPosts(): Promise<Post[]> {
+export async function getPosts(limitParam?: number): Promise<Post[]> {
   try {
-    const result = await db.select().from(posts).orderBy(posts.createdAt);
-    return result as Post[];
+    const query = db.select()
+      .from(posts)
+      .orderBy(desc(posts.createdAt))
+      .limit(limitParam ?? Number.MAX_SAFE_INTEGER);
+
+    const result = await query;
+    return result;
   } catch (error) {
     console.error('Error fetching posts:', error);
     throw error;

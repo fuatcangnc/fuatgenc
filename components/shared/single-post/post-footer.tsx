@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
-import { ThumbsUp, Smiley, Brain, AngryFace, ThumbsDown, TwitterLogo, FacebookLogo, InstagramLogo, LinkedinLogo, YoutubeLogo } from "@phosphor-icons/react";
+import { ThumbsUp, Smiley, Brain, ThumbsDown, TwitterLogo, FacebookLogo, InstagramLogo, LinkedinLogo, YoutubeLogo } from "@phosphor-icons/react";
 
 // Arayüz tanımlamaları
 interface Reaction {

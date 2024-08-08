@@ -13,11 +13,7 @@ export default function HomeSidebar () {
           Mağazanı Oluştur
         </button>
       </div>
-      <Avatar
-      name="Ayhan KARAMAN"
-      imageUrl="/path-to-image.jpg"
-      description="Site Destek dijital performans ve reklam ajansı kurucusu. Türkiye'nin en iyi pazarlama blog siteleri listesinde (Power 100) ilk 5 içerisinde yer almakta ve Türkiye'nin en iyi SEO uzmanları arasında ilk 5 içerisinde gösterilmektedir."
-    />
+      <Avatar/>
       </section>
     );
   };

@@ -2,7 +2,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import PaginationComponent from './Pagination';
+import PaginationComponent from './pagination';
 import HomeCard from './home/home-card';
 
 interface HomeCardData {
@@ -46,7 +46,6 @@ const PaginatedContent: React.FC<PaginatedContentProps> = ({ items, itemsPerPage
       <PaginationComponent 
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={handlePageChange}
       />
     </>
   );
