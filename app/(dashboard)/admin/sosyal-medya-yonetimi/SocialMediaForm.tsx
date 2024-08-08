@@ -22,9 +22,9 @@ interface Platform {
 }
 
 interface SocialMedia {
-  id: number;
-  icon: string;
-  social_link: string;
+  id?: number;
+  icon?: string;
+  social_link?: string;
 }
 
 interface SocialMediaFormProps {
@@ -74,7 +74,7 @@ export default function SocialMediaForm({ platforms, existingSocialMedia }: Soci
           description: "Sosyal medya başarıyla eklendi.",
         });
         form.reset();
-        setSocialMediaData([...socialMediaData, { id: Date.now(), ...values }]);
+        setSocialMediaData([...socialMediaData, { id: Date.now(), icon: values.icon, ...values }]);
       } else {
         toast({
           title: "Hata!",
