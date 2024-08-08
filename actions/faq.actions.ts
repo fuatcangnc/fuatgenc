@@ -24,11 +24,7 @@ export async function updateSikSorulanSoru(id: number, data: Partial<SikSorulanS
   try {
     const validatedData = sikSorulanSorularSchema.partial().parse(data)
     const [updatedSoru] = await db.update(sikSorulanSorular)
-      .set({
-        soruAdi: validatedData.soruAdi,
-        icerik: validatedData.icerik,
-        durumu: validatedData.durumu,
-      })
+      .set(validatedData)
       .where(eq(sikSorulanSorular.id, id))
       .returning()
     revalidatePath('/admin/sik-sorulan-sorular')
