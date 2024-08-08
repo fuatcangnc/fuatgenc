@@ -28,23 +28,20 @@ export async function uploadFile(formData: FormData) {
     const buffer = await file.arrayBuffer();
     await writeFile(filePath, Buffer.from(buffer));
 
-    const newFile: NewMediaFile = {
-      name: uniqueFileName,
-      size: file.size,
-      url: `/uploads/${uniqueFileName}`,
-      ...fileData,
+    const newFile: Required<NewMediaFile> = {
+      name: uniqueFileName, // Zorunlu alan
+      size: file.size,      // Zorunlu alan
+      url: `/uploads/${uniqueFileName}`, // Zorunlu alan
+      alternativeText: fileData.alternativeText || "", // Opsiyonel alanı boş string olarak belirtiyoruz
+      title: fileData.title || "", // Opsiyonel alan
+      description: fileData.description || "", // Opsiyonel alan
     };
+    
+    
+    const [insertedFile] = await db.insert(mediaFiles).values(newFile).returning();
 
-    const validatedFile = newMediaFileSchema.parse(newFile);
-    const [insertedFile] = await db.insert(mediaFiles).values({
-      name: validatedFile.name,
-      size: validatedFile.size,
-      url: validatedFile.url,
-      alternativeText: validatedFile.alternativeText,
-      title: validatedFile.title,
-      description: validatedFile.description,
-    }).returning();
-    return insertedFile;
+
+    return insertedFile
   } catch (error) {
     console.error('Error uploading file:', error);
     throw error;
