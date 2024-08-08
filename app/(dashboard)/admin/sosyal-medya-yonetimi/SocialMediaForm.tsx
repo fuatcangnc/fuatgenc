@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { addSocialMedia, deleteSocialMedia } from '@/actions/social.actions';
+import { deleteSocialMedia } from '@/actions/social.actions';
 import { DataTable } from '@/components/admin/data-table';
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "@/components/ui/use-toast";
-import { FacebookLogo, XLogo,YoutubeLogo, InstagramLogo, LinkedinLogo, Icon, Pencil, Trash } from "@phosphor-icons/react";
+import { FacebookLogo, XLogo, YoutubeLogo, InstagramLogo, LinkedinLogo, Icon, Pencil, Trash } from "@phosphor-icons/react";
 import Link from 'next/link';
 
 interface Platform {
@@ -30,6 +30,7 @@ interface SocialMedia {
 interface SocialMediaFormProps {
   platforms: Platform[];
   existingSocialMedia: SocialMedia[];
+  onSubmit: (formData: FormData) => Promise<{ success: boolean; error?: any }>;
 }
 
 const formSchema = z.object({
@@ -46,11 +47,10 @@ const platformIcons: { [key: string]: Icon } = {
   x: XLogo,
   instagram: InstagramLogo,
   linkedin: LinkedinLogo,
-  youtube:YoutubeLogo
-  // Diğer platformlar için ikonları ekleyin
+  youtube: YoutubeLogo
 };
 
-export default function SocialMediaForm({ platforms, existingSocialMedia }: SocialMediaFormProps) {
+export default function SocialMediaForm({ platforms, existingSocialMedia, onSubmit }: SocialMediaFormProps) {
   const [socialMediaData, setSocialMediaData] = React.useState<SocialMedia[]>(existingSocialMedia);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,13 +61,13 @@ export default function SocialMediaForm({ platforms, existingSocialMedia }: Soci
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function handleSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
     formData.append('icon', values.icon);
     formData.append('social_link', values.social_link);
 
     try {
-      const result = await addSocialMedia(formData);
+      const result = await onSubmit(formData);
       if (result.success) {
         toast({
           title: "Başarılı!",
@@ -152,7 +152,7 @@ export default function SocialMediaForm({ platforms, existingSocialMedia }: Soci
   return (
     <div className="space-y-8">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="icon"

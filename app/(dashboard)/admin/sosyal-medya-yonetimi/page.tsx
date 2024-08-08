@@ -1,13 +1,20 @@
 import { getSocialMedia, addSocialMedia } from '@/actions/social.actions';
 import SocialMediaForm from './SocialMediaForm';
+import { InstagramLogo, FacebookLogo, TwitterLogo, LinkedinLogo, YoutubeLogo } from '@phosphor-icons/react/dist/ssr';
+import { IconProps } from '@phosphor-icons/react';
 
+type Platform = {
+  value: string;
+  label: string;
+  icon: React.ForwardRefExoticComponent<IconProps>;
+};
 export default async function SocialMediaManagement() {
-  const socialMediaPlatforms = [
-    { value: 'instagram', label: 'Instagram', icon: 'instagram' },
-    { value: 'facebook', label: 'Facebook', icon: 'facebook' },
-    { value: 'x', label: 'X', icon: 'x' },
-    { value: 'linkedin', label: 'LinkedIn', icon: 'linkedin' },
-    { value: 'youtube', label: 'YouTube', icon: 'youtube' },
+  const socialMediaPlatforms: Platform[] = [
+    { value: 'instagram', label: 'Instagram', icon: InstagramLogo },
+    { value: 'facebook', label: 'Facebook', icon: FacebookLogo },
+    { value: 'x', label: 'X', icon: TwitterLogo },
+    { value: 'linkedin', label: 'LinkedIn', icon: LinkedinLogo },
+    { value: 'youtube', label: 'YouTube', icon: YoutubeLogo },
   ];
 
   const existingSocialMedia = await getSocialMedia();
