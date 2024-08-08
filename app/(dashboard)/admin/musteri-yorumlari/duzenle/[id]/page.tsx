@@ -98,10 +98,19 @@ export default function DuzenleMusteriYorumu({ params }: { params: { id: string 
     }
   }
 
-  const handleMediaSelect = (mediaUrl: string) => {
-    form.setValue("musteriResmi", mediaUrl)
-    setIsMediaLibraryOpen(false)
-  }
+  const handleMediaSelect = (file: { 
+    id: number; 
+    createdAt: Date; 
+    name: string; 
+    size: number; 
+    url: string; 
+    alternativeText: string | null; 
+    title: string | null; 
+    description: string | null; 
+  }) => {
+    form.setValue("musteriResmi", file.url);
+    setIsMediaLibraryOpen(false);
+  };
 
   if (isLoading) {
     return <div>Yükleniyor...</div>
@@ -206,10 +215,10 @@ export default function DuzenleMusteriYorumu({ params }: { params: { id: string 
       </Form>
       {isMediaLibraryOpen && (
         <MediaLibraryModal
-          isOpen={isMediaLibraryOpen}
-          onClose={() => setIsMediaLibraryOpen(false)}
-          onSelect={handleMediaSelect}
-        />
+        isOpen={isMediaLibraryOpen}
+        onClose={() => setIsMediaLibraryOpen(false)}
+        onSelect={handleMediaSelect}
+      />
       )}
     </div>
   )
