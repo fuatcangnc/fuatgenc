@@ -1,6 +1,6 @@
 "use server"
 
-import { projectSchema } from "@/schemas/projectSchema"
+import { projectSchema, ProjectFormData } from "@/schemas/projectSchema"
 import { projects } from "@/lib/schema"
 import { db } from "@/lib/db"
 import fs from 'fs'
@@ -32,29 +32,27 @@ export async function getProjectById(id: number) {
 }
 
 export async function createProject(formData: FormData) {
-  const data: Record<string, any> = {}
-  formData.forEach((value, key) => {
-    data[key] = value
-  })
-
-  // Resim dosyasını işle
-  if (data.image && typeof data.image === 'object' && data.image instanceof File) {
-    const imagePath = await uploadProjectImage(data.image)
-    data.image = imagePath  // Resim yolunu güncelle
-  }
-
-  const result = projectSchema.safeParse(data)
+  const result = projectSchema.safeParse(Object.fromEntries(formData))
   if (!result.success) {
     return { success: false, error: result.error.format() }
   }
 
+  const projectData: ProjectFormData = result.data
+
+  let imageUrl = ''
+  if (projectData.image instanceof File) {
+    imageUrl = await uploadProjectImage(projectData.image)
+  } else {
+    imageUrl = projectData.image
+  }
+
   try {
     const newProject = await db.insert(projects).values({
-      name: result.data.name,
-      status: result.data.status,
-      startDate: new Date(result.data.startDate),
-      endDate: result.data.endDate ? new Date(result.data.endDate) : null,
-      image: result.data.image,
+      name: projectData.name,
+      status: projectData.status,
+      startDate: new Date(projectData.startDate),
+      endDate: projectData.endDate ? new Date(projectData.endDate) : null,
+      image: imageUrl,
     }).returning()
 
     return { success: true, data: newProject[0] }
@@ -65,30 +63,28 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(id: number, formData: FormData) {
-  const data: Record<string, any> = {}
-  formData.forEach((value, key) => {
-    data[key] = value
-  })
-
-  // Resim dosyasını işle
-  if (data.image && typeof data.image === 'object' && data.image instanceof File) {
-    const imagePath = await uploadProjectImage(data.image)
-    data.image = imagePath  // Resim yolunu güncelle
-  }
-
-  const result = projectSchema.safeParse(data)
+  const result = projectSchema.safeParse(Object.fromEntries(formData))
   if (!result.success) {
     return { success: false, error: result.error.format() }
+  }
+
+  const projectData: ProjectFormData = result.data
+
+  let imageUrl = ''
+  if (projectData.image instanceof File) {
+    imageUrl = await uploadProjectImage(projectData.image)
+  } else {
+    imageUrl = projectData.image
   }
 
   try {
     const updatedProject = await db.update(projects)
       .set({
-        name: result.data.name,
-        status: result.data.status,
-        startDate: new Date(result.data.startDate),
-        endDate: result.data.endDate ? new Date(result.data.endDate) : null,
-        image: result.data.image,
+        name: projectData.name,
+        status: projectData.status,
+        startDate: new Date(projectData.startDate),
+        endDate: projectData.endDate ? new Date(projectData.endDate) : null,
+        image: imageUrl,
       })
       .where(eq(projects.id, id))
       .returning()
@@ -127,7 +123,7 @@ export async function deleteProject(id: number) {
   }
 }
 
-export async function uploadProjectImage(file: File) {
+export async function uploadProjectImage(file: File): Promise<string> {
   const bytes = await file.arrayBuffer()
   const buffer = Buffer.from(bytes)
 
@@ -135,5 +131,5 @@ export async function uploadProjectImage(file: File) {
   const filepath = path.join(process.cwd(), 'public', 'uploads', 'proje-yonetimi', filename)
 
   await fs.promises.writeFile(filepath, buffer)
-  return `${filename}`  // Yalnızca dosya yolunu döndür
+  return filename  // Yalnızca dosya adını döndür
 }
