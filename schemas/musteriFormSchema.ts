@@ -3,7 +3,7 @@ import * as z from "zod";
 export const musteriYorumuSchema = z.object({
   musteriAdi: z.string().min(2, "Müşteri adı en az 2 karakter olmalıdır."),
   musteriAciklamasi: z.string().min(2, "Açıklama en az 10 karakter olmalıdır."),
-  musteriResmi: z.string().optional(),
+  musteriResmi: z.string().nullable().optional(),
   durum: z.boolean().default(true),
 });
 
