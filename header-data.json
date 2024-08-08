@@ -1,0 +1,15 @@
+{
+  "image": "##",
+  "menus": [
+    {
+      "name": "Ana Sayfa",
+      "link": "/",
+      "submenus": [
+        {
+          "name": "Sub",
+          "link": "#"
+        }
+      ]
+    }
+  ]
+}
