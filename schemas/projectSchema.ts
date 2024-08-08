@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const projectSchema = z.object({
   name: z.string().min(1, "Proje adı gereklidir"),
-  status: z.string().min(1, "Durum gereklidir"),
+  status: z.string().default("active"),
   startDate: z.string().min(1, "Başlangıç tarihi gereklidir"),
   endDate: z.string().optional(),
   image: z.string().min(1, "Proje resmi gereklidir"),

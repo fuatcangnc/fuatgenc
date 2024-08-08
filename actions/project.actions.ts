@@ -7,6 +7,50 @@ import fs from 'fs'
 import path from 'path'
 import { eq } from "drizzle-orm"
 import { Project } from '@/types/index'
+import { revalidatePath } from "next/cache"
+
+
+type ProjectInput = Omit<Project, 'id' | 'createdAt' | 'updatedAt'>
+
+export async function createProject(data: ProjectInput) {
+  try {
+    const validatedData = projectSchema.parse(data)
+    const [newProject] = await db.insert(projects).values({
+      name: validatedData.name,
+      status: validatedData.status,
+      startDate: new Date(validatedData.startDate),
+      endDate: validatedData.endDate ? new Date(validatedData.endDate) : null,
+      image: validatedData.image,
+    } as { name: string; status: string; startDate: Date; endDate: Date | null; image: string; }).returning()
+    revalidatePath('/admin/projects')
+    return { success: true, data: newProject }
+  } catch (error) {
+    console.error('Proje oluşturulurken hata oluştu:', error)
+    return { success: false, error: 'Proje oluşturulamadı' }
+  }
+}
+
+export async function updateProject(id: number, data: Partial<ProjectInput>) {
+  try {
+    const validatedData = projectSchema.partial().parse(data)
+    const updateData = {
+      ...(validatedData.name && { name: validatedData.name }),
+      ...(validatedData.status && { status: validatedData.status }),
+      ...(validatedData.startDate && { startDate: new Date(validatedData.startDate) }),
+      ...(validatedData.endDate && { endDate: new Date(validatedData.endDate) }),
+      ...(validatedData.image && { image: validatedData.image }),
+    }
+    const [updatedProject] = await db.update(projects)
+      .set(updateData)
+      .where(eq(projects.id, id))
+      .returning()
+    revalidatePath('/admin/projects')
+    return { success: true, data: updatedProject }
+  } catch (error) {
+    console.error('Proje güncellenirken hata oluştu:', error)
+    return { success: false, error: 'Proje güncellenemedi' }
+  }
+}
 
 export async function getProjects() {
   try {
@@ -31,74 +75,6 @@ export async function getProjectById(id: number) {
   }
 }
 
-export async function createProject(formData: FormData) {
-  const result = projectSchema.safeParse(Object.fromEntries(formData))
-  if (!result.success) {
-    return { success: false, error: result.error.format() }
-  }
-
-  const projectData: ProjectFormData = result.data
-
-  let imageUrl = ''
-  if (projectData.image instanceof File) {
-    imageUrl = await uploadProjectImage(projectData.image)
-  } else {
-    imageUrl = projectData.image
-  }
-
-  try {
-    const newProject = await db.insert(projects).values({
-      name: projectData.name,
-      status: projectData.status,
-      startDate: new Date(projectData.startDate),
-      endDate: projectData.endDate ? new Date(projectData.endDate) : null,
-      image: imageUrl,
-    }).returning()
-
-    return { success: true, data: newProject[0] }
-  } catch (error) {
-    console.error("Proje ekleme hatası:", error)
-    return { success: false, error: "Proje eklenirken bir hata oluştu." }
-  }
-}
-
-export async function updateProject(id: number, formData: FormData) {
-  const result = projectSchema.safeParse(Object.fromEntries(formData))
-  if (!result.success) {
-    return { success: false, error: result.error.format() }
-  }
-
-  const projectData: ProjectFormData = result.data
-
-  let imageUrl = ''
-  if (projectData.image instanceof File) {
-    imageUrl = await uploadProjectImage(projectData.image)
-  } else {
-    imageUrl = projectData.image
-  }
-
-  try {
-    const updatedProject = await db.update(projects)
-      .set({
-        name: projectData.name,
-        status: projectData.status,
-        startDate: new Date(projectData.startDate),
-        endDate: projectData.endDate ? new Date(projectData.endDate) : null,
-        image: imageUrl,
-      })
-      .where(eq(projects.id, id))
-      .returning()
-
-    if (updatedProject.length === 0) {
-      return { success: false, error: "Proje bulunamadı." }
-    }
-
-    return { success: true, data: updatedProject[0] }
-  } catch (error) {
-    console.error("Proje güncelleme hatası:", error)
-    return { success: false, error: "Proje güncellenirken bir hata oluştu." }
-  }
-}
 
 export async function deleteProject(id: number) {
   try {
@@ -110,7 +86,6 @@ export async function deleteProject(id: number) {
       return { success: false, error: "Proje bulunamadı." }
     }
 
-    // Eğer projenin bir resmi varsa, onu da silelim
     if (deletedProject[0].image) {
       const imagePath = path.join(process.cwd(), 'public', 'uploads', 'proje-yonetimi', deletedProject[0].image)
       await fs.promises.unlink(imagePath).catch(err => console.error("Resim silme hatası:", err))
@@ -131,5 +106,5 @@ export async function uploadProjectImage(file: File): Promise<string> {
   const filepath = path.join(process.cwd(), 'public', 'uploads', 'proje-yonetimi', filename)
 
   await fs.promises.writeFile(filepath, buffer)
-  return filename  // Yalnızca dosya adını döndür
+  return filename
 }
