@@ -1,5 +1,4 @@
 import { getGoogleForms, updateGoogleForm, addGoogleForm } from "@/actions/api-ayarlari.actions"
-import { Toaster } from "@/components/ui/toaster"
 import ClientForm from './client-form'
 
 export default async function GoogleForm() {
@@ -26,7 +25,6 @@ export default async function GoogleForm() {
   return (
     <>
       <ClientForm currentForm={currentForm} handleSubmit={handleSubmit} />
-      <Toaster />
     </>
   )
 }

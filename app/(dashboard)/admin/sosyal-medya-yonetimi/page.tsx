@@ -1,4 +1,4 @@
-import { addSocialMedia, getSocialMedia } from '@/actions/social.actions';
+import { getSocialMedia, addSocialMedia } from '@/actions/social.actions';
 import SocialMediaForm from './SocialMediaForm';
 import { InstagramLogo, FacebookLogo, TwitterLogo, LinkedinLogo, YoutubeLogo } from '@phosphor-icons/react/dist/ssr';
 import { IconProps } from '@phosphor-icons/react';
@@ -20,17 +20,23 @@ export default async function SocialMediaManagement() {
 
   const existingSocialMedia = await getSocialMedia();
 
+  const handleSubmit = async (formData: FormData) => {
+    'use server';
+    try {
+      await addSocialMedia(formData);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error };
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Sosyal Medya Yönetimi</h1>
       <SocialMediaForm 
         platforms={socialMediaPlatforms} 
         existingSocialMedia={existingSocialMedia} 
-        // @ts-ignore: Type 'Promise<void>' is not assignable to type 'Promise<{ success: boolean; error?: any; }>'
-        onSubmit={async (data) => {
-          // Bu işlevi sunucu tarafında çalıştırın
-          await addSocialMedia(data);
-        }} 
+        onSubmit={handleSubmit}
       />
     </div>
   );

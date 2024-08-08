@@ -74,7 +74,7 @@ export default function SocialMediaForm({ platforms, existingSocialMedia, onSubm
           description: "Sosyal medya başarıyla eklendi.",
         });
         form.reset();
-        setSocialMediaData([...socialMediaData, { id: Date.now(), icon: values.icon, ...values }]);
+        setSocialMediaData(prevData => [...prevData, { id: Date.now(), ...values }]);
       } else {
         toast({
           title: "Hata!",
@@ -91,6 +91,26 @@ export default function SocialMediaForm({ platforms, existingSocialMedia, onSubm
       console.error(err);
     }
   }
+
+  const handleDelete = async (id: number) => {
+    if (confirm("Bu sosyal medya bağlantısını silmek istediğinizden emin misiniz?")) {
+      try {
+        await deleteSocialMedia(id);
+        setSocialMediaData(prevData => prevData.filter(item => item.id !== id));
+        toast({
+          title: "Başarılı!",
+          description: "Sosyal medya bağlantısı başarıyla silindi.",
+        });
+      } catch (error) {
+        toast({
+          title: "Hata!",
+          description: "Silme işlemi sırasında bir hata oluştu.",
+          variant: "destructive",
+        });
+        console.error(error);
+      }
+    }
+  };
 
   const columns: ColumnDef<SocialMedia>[] = [
     {
@@ -130,16 +150,7 @@ export default function SocialMediaForm({ platforms, existingSocialMedia, onSubm
           <Button 
             variant="destructive" 
             size="sm"
-            onClick={async () => {
-              if (confirm("Bu sosyal medya bağlantısını silmek istediğinizden emin misiniz?")) {
-                await deleteSocialMedia(row.original.id);
-                setSocialMediaData(socialMediaData.filter(item => item.id !== row.original.id));
-                toast({
-                  title: "Başarılı!",
-                  description: "Sosyal medya bağlantısı başarıyla silindi.",
-                });
-              }
-            }}
+            onClick={() => handleDelete(row.original.id)}
           >
             <Trash className="mr-2 h-4 w-4" />
             Sil
