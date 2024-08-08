@@ -9,8 +9,8 @@ export const sikSorulanSorularSchema = z.object({
   icerik: z.string().min(10, {
     message: "İçerik en az 10 karakter olmalıdır.",
   }),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 })
 
 export type SikSorulanSorular = z.infer<typeof sikSorulanSorularSchema>
