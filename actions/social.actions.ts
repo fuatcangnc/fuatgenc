@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { socialMediaSchema } from "@/schemas/socialSchemas";
 import { z } from "zod";
 
-export async function addSocialMedia(formData: FormData) {
+export async function addSocialMedia(formData: FormData): Promise<{ success: boolean; error?: any }> {
   try {
     const icon = formData.get('icon');
     const social_link = formData.get('social_link');
@@ -23,6 +23,7 @@ export async function addSocialMedia(formData: FormData) {
       icon: validatedData.icon,
       social_link: validatedData.social_link,
     });
+
     return { success: true };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -33,7 +34,6 @@ export async function addSocialMedia(formData: FormData) {
     return { success: false, error: 'An unexpected error occurred' };
   }
 }
-
 export async function getSocialMedia() {
   try {
     const socialMedia = await db.select().from(socialMediaTable);

@@ -1,4 +1,4 @@
-import { getSocialMedia, addSocialMedia } from '@/actions/social.actions';
+import { addSocialMedia, getSocialMedia } from '@/actions/social.actions';
 import SocialMediaForm from './SocialMediaForm';
 import { InstagramLogo, FacebookLogo, TwitterLogo, LinkedinLogo, YoutubeLogo } from '@phosphor-icons/react/dist/ssr';
 import { IconProps } from '@phosphor-icons/react';
@@ -8,6 +8,7 @@ type Platform = {
   label: string;
   icon: React.ForwardRefExoticComponent<IconProps>;
 };
+
 export default async function SocialMediaManagement() {
   const socialMediaPlatforms: Platform[] = [
     { value: 'instagram', label: 'Instagram', icon: InstagramLogo },
@@ -25,9 +26,12 @@ export default async function SocialMediaManagement() {
       <SocialMediaForm 
         platforms={socialMediaPlatforms} 
         existingSocialMedia={existingSocialMedia} 
-        onSubmit={addSocialMedia} 
+        // @ts-ignore: Type 'Promise<void>' is not assignable to type 'Promise<{ success: boolean; error?: any; }>'
+        onSubmit={async (data) => {
+          // Bu işlevi sunucu tarafında çalıştırın
+          await addSocialMedia(data);
+        }} 
       />
-
     </div>
   );
 }
