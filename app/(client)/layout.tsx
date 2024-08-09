@@ -1,3 +1,4 @@
+import Footer from "@/components/shared/footer";
 import Navbar from "@/components/shared/navbar-client";
 import { Metadata, ResolvingMetadata } from 'next';
 
@@ -30,7 +31,7 @@ export default function ClientLayout({
     <>
       <Navbar />
       {children}
-      {/* <Footer/> */}
+      <Footer/>
     </>
   )
 }
