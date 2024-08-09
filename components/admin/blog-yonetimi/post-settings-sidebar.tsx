@@ -12,13 +12,15 @@ import { usePostStore } from '@/store/usePostStore'
 import { MediaLibraryModal } from '@/components/admin/media-library-modal'
 import Image from 'next/image'
 import slugify from 'slugify'
+import { Categories } from './categories'
 
 interface PostSettingsSidebarProps {
-  onPublish: () => Promise<void>;
+  onPublish: (selectedCategories: number[]) => Promise<void>;
   onDelete?: () => Promise<void>;
   isPublishing: boolean;
   isDeleting?: boolean;
   isNewPost?: boolean;
+  initialSelectedCategories?: number[];
 }
 
 export function PostSettingsSidebar({ 
@@ -26,7 +28,8 @@ export function PostSettingsSidebar({
   onDelete, 
   isPublishing, 
   isDeleting = false, 
-  isNewPost = false
+  isNewPost = false,
+  initialSelectedCategories = []
 }: PostSettingsSidebarProps) {
   const { 
     title,
@@ -45,9 +48,9 @@ export function PostSettingsSidebar({
   const [tempSlug, setTempSlug] = useState(slug)
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false)
   const [isSlugManuallySet, setIsSlugManuallySet] = useState(false)
+  const [selectedCategories, setSelectedCategories] = useState<number[]>(initialSelectedCategories)
 
   const updateSlug = useCallback((newSlug: string, isManual: boolean = false) => {
-    console.log('Updating slug:', newSlug, 'Manual:', isManual);
     setSlug(newSlug);
     setTempSlug(newSlug);
     if (isManual) {
@@ -78,17 +81,13 @@ export function PostSettingsSidebar({
 
   const handleEditSlug = () => {
     if (isEditingSlug) {
-      console.log('Saving edited slug:', tempSlug);
       updateSlug(tempSlug, true);
-    } else {
-      console.log('Entering edit mode, current slug:', slug);
     }
     setIsEditingSlug(!isEditingSlug);
   }
 
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSlug = slugify(e.target.value, { lower: true, strict: true });
-    console.log('Slug changed:', newSlug);
     setTempSlug(newSlug);
   }
 
@@ -100,6 +99,14 @@ export function PostSettingsSidebar({
   const handleRemoveImage = () => {
     setFeaturedImage(null)
   }
+
+  const handleCategoriesChange = useCallback((categories: number[]) => {
+    setSelectedCategories(categories);
+  }, []);
+
+  const handlePublish = () => {
+    onPublish(selectedCategories);
+  };
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 p-4 border-l border-gray-200 dark:border-gray-700">
@@ -186,6 +193,8 @@ export function PostSettingsSidebar({
             />
           </div>
 
+          <Categories onCategoriesChange={handleCategoriesChange} initialSelectedCategories={initialSelectedCategories} />
+
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="feature-post" className="dark:text-gray-300">Bu gönderiyi öne çıkar</Label>
@@ -212,7 +221,7 @@ export function PostSettingsSidebar({
             <Button 
               variant="default" 
               className="w-full bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white"
-              onClick={onPublish}
+              onClick={handlePublish}
               disabled={isPublishing}
             >
               {isPublishing ? 'Yayınlanıyor...' : 'Yayınla'}

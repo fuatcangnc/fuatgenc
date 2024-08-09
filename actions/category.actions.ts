@@ -9,16 +9,19 @@ import { revalidatePath } from "next/cache";
 export async function getCategories() {
     try {
       const allCategories = await db.select().from(categories);
-      const categoriesWithPostCount = allCategories.map(category => ({
-        ...category,
-        postCount: 0
+      return allCategories.map(category => ({
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+        checked: category.isDefault || false, // isDefault true ise checked true olacak
+        postCount: 0 // Bu değeri gerçek post sayısıyla değiştirmeyi unutmayın
       }));
-      return { categories: categoriesWithPostCount };
     } catch (error) {
       console.error("Kategoriler getirilirken hata oluştu:", error);
-      return { error: "Kategoriler getirilemedi." };
+      throw new Error(error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu");
     }
   }
+  
 
 export async function getCategoryBySlug(slug: string) {
   try {

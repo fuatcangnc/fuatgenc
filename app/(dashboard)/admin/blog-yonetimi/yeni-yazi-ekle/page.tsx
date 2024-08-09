@@ -21,11 +21,11 @@ export default function YeniYaziEkle() {
     isFeatured, 
     metaTitle, 
     metaDescription,
+    categoryIds,
     resetPost 
   } = usePostStore()
 
   useEffect(() => {
-    // Component mount olduğunda post verilerini sıfırla
     resetPost()
   }, [resetPost])
 
@@ -41,6 +41,7 @@ export default function YeniYaziEkle() {
 
     setIsPublishing(true)
     try {
+      console.log('categoryIds before creating post:', categoryIds) // Debugging için
       const postData = {
         title,
         content,
@@ -50,9 +51,9 @@ export default function YeniYaziEkle() {
         isFeatured,
         metaTitle,
         metaDescription,
-        publishedAt: new Date(), // Yayınlama anını şu an olarak ayarla
+        publishedAt: new Date(),
       }
-      const newPost = await createPost(postData)
+      const newPost = await createPost(postData, categoryIds)
       if (newPost) {
         toast({
           title: "Gönderi oluşturuldu",
