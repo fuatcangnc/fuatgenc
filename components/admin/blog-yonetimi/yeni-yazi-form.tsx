@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { usePostStore } from '@/store/usePostStore'
-import { Editor } from '@/components/admin/editor'
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { usePostStore } from "@/store/usePostStore";
+import { Editor } from "@/components/admin/editor";
 
 export function YeniYaziForm() {
-  const { title, content, setTitle, setContent } = usePostStore()
+  const { title, content, setTitle, setContent } = usePostStore();
 
   return (
     <div className="space-y-4">
@@ -28,5 +28,5 @@ export function YeniYaziForm() {
         />
       </div>
     </div>
-  )
+  );
 }
