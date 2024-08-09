@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { Metadata } from 'next';
-export const revalidate = 3600
+export const revalidate = 36
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
