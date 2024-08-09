@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['placehold.co'],
+      domains: ['fkmrea3hlmnddby5.public.blob.vercel-storage.com'],
       },
       async rewrites() {
         return [
