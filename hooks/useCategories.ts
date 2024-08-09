@@ -6,10 +6,10 @@ export function useCategories() {
     queryKey: ['categories'],
     queryFn: async () => {
       const result = await getCategories()
-      if (result.error) {
+      if ('error' in result && typeof result.error === 'string') {
         throw new Error(result.error)
       }
-      return result.categories
+      return result
     },
   })
 }
