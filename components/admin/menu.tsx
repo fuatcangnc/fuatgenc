@@ -27,11 +27,11 @@ export function Menu({ isOpen }: MenuProps) {
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
       <nav className="mt-8 h-full w-full">
-        <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-2 text-[#f7f7f7]/70 ">
+        <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-2 text-gray-900">
           {menuList.map(({ groupLabel, menus }, index) => (
             <li className={cn("w-full", groupLabel ? "pt-5" : "")} key={index}>
               {(isOpen && groupLabel) || isOpen === undefined ? (
-                <p className="text-sm text-muted-foreground px-4 pb-2 max-w-[248px] truncate text-[13px] ">
+                <p className="text-sm text-muted-foreground px-4 pb-2 max-w-[248px] truncate text-[13px] text-gray-900 ">
                   {groupLabel}
                 </p>
               ) : !isOpen && isOpen !== undefined && groupLabel ? (
@@ -59,21 +59,21 @@ export function Menu({ isOpen }: MenuProps) {
                           <TooltipTrigger asChild>
                             <Button
                               variant={active ? "secondary" : "ghost"}
-                              className="w-full justify-start h-10 mb-1 text-[12px] "
+                              className="w-full justify-start h-10 mb-1 text-[12px] text-gray-900 "
                               asChild
                             >
                               <Link href={href}>
                                 <span
                                   className={cn(isOpen === false ? "" : "mr-4")}
                                 >
-                                  <Icon size={18} />
+                                  <Icon size={16} />
                                 </span>
                                 <p
                                   className={cn(
-                                    "max-w-[200px] truncate text-[#f7f7f7]/70 text-[13px]",
+                                    "max-w-[200px] truncate text-[#f7f7f7]/70 text-[13px] text-gray-900",
                                     isOpen === false
-                                      ? "-translate-x-96 opacity-0 text-[#f7f7f7]/70  text-[13px]"
-                                      : "translate-x-0 opacity-100 text-[#f7f7f7]/70 text-[13px]"
+                                      ? "-translate-x-96 opacity-0 text-[#f7f7f7]/70  text-[13px] text-gray-900"
+                                      : "translate-x-0 opacity-100 text-[#f7f7f7]/70 text-[13px] text-gray-900"
                                   )}
                                 >
                                   {label}
@@ -118,7 +118,7 @@ export function Menu({ isOpen }: MenuProps) {
                     <p
                       className={cn(
                         "whitespace-nowrap text-[13px]",
-                        isOpen === false ? "opacity-0 hidden" : "opacity-100 text-[13px]"
+                        isOpen === false ? "opacity-0 hidden" : "opacity-100 text-[13px] text-gray-900"
                       )}
                     >
                       Sign out
