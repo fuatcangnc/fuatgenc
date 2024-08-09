@@ -1,21 +1,27 @@
 import { Inter } from "next/font/google"
 import "./globals.css"
-import Navbar from "@/components/shared/navbar-client";
+import { Metadata } from 'next';
 
 const inter = Inter({ subsets: ["latin"] })
 
-export default  function RootLayout({
+export const metadata: Metadata = {
+  title: {
+    default: 'Benim Sitem',
+    template: '%s | Benim Sitem',
+  },
+  description: 'Benim harika sitem hakkında genel açıklama',
+  // Diğer genel metadata alanları...
+};
+
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="tr" suppressHydrationWarning>
-      <body className={`${inter.className} relative`}>
-      <Navbar/>
-
-      {children}
-      {/* <Footer/> */}
+      <body className={inter.className}>
+        {children}
       </body>
     </html>
   )

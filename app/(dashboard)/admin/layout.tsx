@@ -1,8 +1,25 @@
-import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AdminLayout } from "@/components/admin/admin-layout"
+import { Metadata, ResolvingMetadata } from 'next';
 
-const inter = Inter({ subsets: ["latin"] })
+type Props = {
+  children: React.ReactNode;
+  params: { slug: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // Admin sayfaları için özel metadata
+  const title = `Admin Panel - ${params.slug || 'Dashboard'}`;
+
+  return {
+    title,
+    description: 'Admin panel sayfası',
+    // Diğer metadata alanları...
+  };
+}
 
 export default function AdminPanelLayout({
   children
@@ -10,19 +27,15 @@ export default function AdminPanelLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="tr" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AdminLayout>
-            {children}
-          </AdminLayout>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <AdminLayout>
+        {children}
+      </AdminLayout>
+    </ThemeProvider>
   )
 }
