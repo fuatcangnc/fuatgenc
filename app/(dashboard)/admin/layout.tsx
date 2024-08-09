@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider"
 import { AdminLayout } from "@/components/admin/admin-layout"
 import { Metadata, ResolvingMetadata } from 'next';
+import ReactQueryProvider from '@/providers/ReactQueryProvider'
 
 type Props = {
   children: React.ReactNode;
@@ -27,15 +28,17 @@ export default function AdminPanelLayout({
   children: React.ReactNode
 }) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <AdminLayout>
-        {children}
-      </AdminLayout>
-    </ThemeProvider>
+    <ReactQueryProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <AdminLayout>
+          {children}
+        </AdminLayout>
+      </ThemeProvider>
+    </ReactQueryProvider>
   )
 }

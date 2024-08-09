@@ -139,6 +139,10 @@ export function getMenuList(pathname: string): Group[] {
               label: "Blog Yönetimi",
               active: pathname === "/admin/blog-yonetimi"
             },{
+              href: "/admin/kategoriler",
+              label: "Kategoriler",
+              active: pathname === "/admin/kategoriler"
+            },{
               href: "/admin/proje-yonetimi",
               label: "Proje Yönetimi",
               active: pathname === "/admin/proje-yonetimi"

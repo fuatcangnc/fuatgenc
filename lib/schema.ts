@@ -11,9 +11,11 @@ import {
 } from "drizzle-orm/pg-core"
 import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
-import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
+import { type InferSelectModel, type InferInsertModel, relations } from 'drizzle-orm';
 import * as z from 'zod';
 import { sikSorulanSorularSchema } from '@/schemas/faqSchema';
+import { categorySchema, CategorySchema } from '@/schemas/categorySchema';
+
 export type SikSorulanSorularSchemaType = z.infer<typeof sikSorulanSorularSchema>;
 const connectionString = process.env.POSTGRES_URL!
 const pool = postgres(connectionString, { max: 1 })
@@ -154,3 +156,51 @@ export const musteriYorumlari = pgTable("musteri_yorumlari", {
 
 export type MusteriYorumu = InferSelectModel<typeof musteriYorumlari>;
 export type YeniMusteriYorumu = Omit<MusteriYorumu, 'id' | 'createdAt' | 'updatedAt'>;
+
+
+
+
+
+
+
+export const categories = pgTable('categories', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  description: text('description'),
+  isDefault: boolean('is_default').default(false),
+  seoTitle: varchar('seo_title', { length: 255 }),
+  seoDescription: text('seo_description'),
+  seoImage: text('seo_image'),
+  isIndexed: boolean('is_indexed').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Post ve Category arasındaki ilişkiyi sağlayan ara tablo
+export const postCategories = pgTable('post_categories', {
+  postId: integer('post_id').notNull().references(() => posts.id),
+  categoryId: integer('category_id').notNull().references(() => categories.id),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.postId, t.categoryId] }),
+}));
+// İlişkileri tanımlayalım
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  posts: many(postCategories),
+}));
+
+export const postCategoriesRelations = relations(postCategories, ({ one }) => ({
+  post: one(posts, {
+    fields: [postCategories.postId],
+    references: [posts.id],
+  }),
+  category: one(categories, {
+    fields: [postCategories.categoryId],
+    references: [categories.id],
+  }),
+}));
+
+
+
+export type Category = typeof categories.$inferSelect;
+export type NewCategory = typeof categories.$inferInsert;

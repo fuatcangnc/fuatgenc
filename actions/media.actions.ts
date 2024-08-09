@@ -67,3 +67,4 @@ export async function updateFileMetadata(id: number, metadata: Partial<NewMediaF
     .returning();
   return updatedFile;
 }
+
