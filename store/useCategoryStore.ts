@@ -38,8 +38,7 @@ export const useCategoryStore = create<CategoryState>((set) => ({
   seoDescription: '',
   isIndexed: true,
   setName: (name) => set((state) => {
-    const baseSlug = slugify(name, { lower: true, strict: true })
-    const newSlug = `${baseSlug}-${Date.now()}`  // Benzersizliği sağlamak için timestamp ekleyin
+    const newSlug = slugify(name, { lower: true, strict: true })
     return { name, slug: newSlug, tempSlug: newSlug }
   }),
   setSlug: (slug) => set({ slug }),
@@ -51,7 +50,11 @@ export const useCategoryStore = create<CategoryState>((set) => ({
   setSeoTitle: (title) => set({ seoTitle: title }),
   setSeoDescription: (description) => set({ seoDescription: description }),
   setIsIndexed: (isIndexed) => set({ isIndexed }),
-  updateSlug: (newSlug, isManual) => set({ slug: newSlug, tempSlug: newSlug, isEditingSlug: false }),
+  updateSlug: (newSlug, isManual) => set((state) => ({ 
+    slug: isManual ? newSlug : state.slug, 
+    tempSlug: newSlug, 
+    isEditingSlug: false 
+  })),
   resetForm: () => set({
     name: '',
     slug: '',

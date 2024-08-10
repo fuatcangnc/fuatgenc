@@ -69,35 +69,25 @@ export async function getCategoryBySlug(slug: string) {
 }
 
 export async function createCategory(data: CategorySchema) {
-    try {
-      // Slug'ın benzersiz olmasını sağla
-      let uniqueSlug = data.slug;
-      let counter = 1;
-      while (true) {
-        const existingCategory = await db.select()
-          .from(categories)
-          .where(eq(categories.slug, uniqueSlug))
-          .limit(1);
-        
-        if (existingCategory.length === 0) break;
-        
-        uniqueSlug = `${data.slug}-${counter}`;
-        counter++;
-      }
-  
-      // Benzersiz slug ile kategori oluştur
-      // ... existing code ...
-const newCategory = await db.insert(categories)
-.values({ name: data.name, slug: uniqueSlug })
-.returning();
-// ... existing code ...
-  
-      return { category: newCategory[0] };
-    } catch (error) {
-      console.error("Kategori oluşturulurken hata oluştu:", error);
-      return { error: "Kategori oluşturulamadı." };
+  try {
+    const validatedData = categorySchema.parse(data);
+    const newCategory = await db.insert(categories)
+      .values({
+        name: validatedData.name,
+        slug: validatedData.slug,
+        // Add other fields as needed, but ensure they're optional
+      })
+      .returning();
+    revalidatePath('/admin/kategoriler');
+    return { category: newCategory[0] };
+  } catch (error) {
+    console.error("Kategori oluşturulurken hata oluştu:", error);
+    if (error instanceof Error) {
+      return { error: error.message };
     }
+    return { error: "Kategori oluşturulamadı." };
   }
+}
 
 export async function updateCategory(id: number, data: Partial<CategorySchema>) {
   try {
