@@ -16,8 +16,8 @@ interface FAQItem {
 function FAQAccordion() {
   const faqItems: FAQItem[] = [
     {
-      question: "Ayhan KARAMAN Kimdir?",
-      answer: "Site Destek dijital performans ajansı kurucusudur. Aynı zamanda Türkiye'nin en iyi pazarlama blog siteleri listesinde (Power 100) ilk 5 içerisinde yer alan ayhankaraman.com web sitesinin sahibidir. Bulunduğu sektörü büyütmek için gece gündüz çalışan genç (39 yaşında) :) bir girişimcidir."
+      question: "Fuat Genc Kimdir?",
+      answer: "Web sitenizin hem kullanıcı dostu hem de arama motorları için optimize edilmiş olması gerektiğine inanıyorum. Uzmanlık alanım, sitenizi Google gibi arama motorlarında üst sıralara taşıyarak, daha fazla ziyaretçi ve potansiyel müşteri kazanmanızı sağlamaktır. WordPress ile site kurulumundan SEO stratejilerine kadar her aşamada size profesyonel destek sunuyorum. "
     },
     {
       question: "Ne Tür İçerikler Üretirsiniz?",

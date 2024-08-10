@@ -12,7 +12,7 @@ function ContactForm() {
       <Card className="border border-[#02CA96] rounded-none p-4">
         <CardContent className="p-4">
           <h2 className="text-center text-xl font-bold text-[#02CA96] mb-2">
-            AYHAN KARAMAN İLE İLETİŞİM KUR
+              İLETİŞİM KUR
           </h2>
           <p className="text-center text-sm mb-4">
             Sadece 24 Saat İçerisinde Cevap Vereceğimden Hiç Şüpheniz Olmasın :)
