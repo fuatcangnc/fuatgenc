@@ -71,7 +71,7 @@ const Navbar: React.FC = () => {
               <Image
                 width={263}
                 height={70}
-                src={"/goodnews-logo-2.webp"}
+                src={"/fuat-genc.webp"}
                 alt=""
               />
             </Link>
