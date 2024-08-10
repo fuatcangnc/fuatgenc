@@ -118,7 +118,7 @@ const Navbar: React.FC = () => {
                   WordPress SEO
                 </Link>
                 <Link
-                  href="/kategori/wordpress-temalar"
+                  href="/kategori/wordpress-temalari"
                   className="text-sm font-bold hover:text-gray-600"
                 >
                   WordPress Temaları

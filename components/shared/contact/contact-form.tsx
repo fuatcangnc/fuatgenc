@@ -7,7 +7,7 @@ function ContactForm() {
     <div >
       <h1 className="text-2xl font-bold mb-4">İletişim</h1>
       <p className="mb-4 text-sm">
-        Günümüzde en çok kullanılan 2 iletişim kanalından biri telefon diğeri ise WhatsApp :) Bana ulaşmak için 0542 461 64 61 numaralı telefon numarasını ya da aşağıda paylaştığım iletişim araçlarını kullanabilirsiniz.
+        Günümüzde en çok kullanılan 2 iletişim kanalından biri telefon diğeri ise WhatsApp :) Bana ulaşmak için 0553 080 5798 numaralı telefon numarasını ya da aşağıda paylaştığım iletişim araçlarını kullanabilirsiniz.
       </p>
       <Card className="border border-[#02CA96] rounded-none p-4">
         <CardContent className="p-4">
