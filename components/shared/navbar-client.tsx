@@ -71,7 +71,7 @@ const Navbar: React.FC = () => {
               <Image
                 width={263}
                 height={70}
-                src={"/fuat-genc-logo.webp"}
+                src={"/fuat-genc-logo.svg"}
                 alt=""
               />
             </Link>
