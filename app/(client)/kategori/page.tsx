@@ -1,38 +1,24 @@
-import PostCardContainer from '@/components/shared/post-card/post-card-container'
-import Breadcrumb from "@/components/shared/breadcrumb";
+import Link from 'next/link';
+import { getCategories } from '@/actions/category.actions';
 
-import React from 'react'
-import HomeSidebar from '@/components/shared/home-sidebar';
+export default async function KategoriListesi() {
+  const categories = await getCategories();
 
-function Kategori() {
-    const breadcrumbItems = [
-        { label: "Home", href: "/" },
-        { label: "Phones", href: "/phones" },
-        {
-          label: "Tecno Spark 10 Launched With Up To 16GB RAM, 32MP Selfie Camera",
-          href: "#",
-        },
-      ];
   return (
-    <section className='container max-w-7xl mx auto`'>
-        <div className="category-wrap md:p-8 p-4 border my-8 ">
-        <Breadcrumb items={breadcrumbItems} />
-        
-        <h1 className='font-bold text-3xl mb-2'>WordPress</h1>
-        <p>WordPress eklentileri, güncellemeleri ve yenilikleri bu kategoride sizlerle buluşuyor.</p>
-        </div>
-        <div className='flex flex-col lg:flex-row lg:gap-x-16'>
-        <div className='lg:w-[70%]'>
-        <PostCardContainer/>
-
-        </div>
-            <div className='lg:w-[30%]'>
-        <HomeSidebar/>
-
-            </div>
-        </div>
+    <section className='container max-w-7xl mx-auto my-8'>
+      <h1 className='text-3xl font-bold mb-6'>Tüm Kategoriler</h1>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        {categories.map((category) => (
+          <Link 
+            key={category.id} 
+            href={`/kategori/${category.slug}`}
+            className='p-4 border rounded-lg hover:bg-gray-100 transition-colors'
+          >
+            <h2 className='text-xl font-semibold'>{category.name}</h2>
+            <p className='text-gray-600 mt-2'>Post Sayısı: {category.postCount}</p>
+          </Link>
+        ))}
+      </div>
     </section>
-  )
+  );
 }
-
-export default Kategori

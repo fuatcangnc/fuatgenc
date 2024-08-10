@@ -1,9 +1,8 @@
-// app/blog/[slug]/page.tsx
 import { getPostBySlug } from '@/actions/posts.actions';
 import { notFound } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
-import { WhatsappLogo, FacebookLogo, XLogo,ChatCircleText } from "@phosphor-icons/react/dist/ssr";
+import { WhatsappLogo, FacebookLogo, XLogo, ChatCircleText } from "@phosphor-icons/react/dist/ssr";
 import Breadcrumb from "@/components/shared/breadcrumb";
 import SocialShare from "@/components/shared/single-post/social-share";
 import PostFooter from "@/components/shared/footer";
@@ -28,9 +27,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
   }
 
   const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: "Blog", href: "/blog" },
-    { label: post.title, href: `#` },
+    { label: "Ana Sayfa", href: "/" },
+    { label: post.title, href: `/${post.slug}` },
   ];
 
   const articleSchema = {
@@ -43,9 +41,10 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     "dateModified": post.updatedAt,
     "author": {
       "@type": "Person",
-      "name": "Shana" // Statik isim "John Doe"
+      "name": "Shana"
     }
   };
+
   return (
     <>
       <Script
@@ -90,58 +89,57 @@ export default async function BlogPost({ params }: { params: { slug: string } })
             <article className="single-post">
               <div className="single-post-meta space-y-3 mb-[32px]">
                 <Breadcrumb items={breadcrumbItems} />
-                <h1 className="text-3xl font-bold">{post?.title}</h1>
-                <p className="text-gray-600">{post?.excerpt}</p>
+                <h1 className="text-3xl font-bold">{post.title}</h1>
+                <p className="text-gray-600">{post.excerpt}</p>
                 <time
                   className="text-sm text-gray-500 block"
-                  dateTime={post?.publishedAt?.toString()}
+                  dateTime={post.publishedAt?.toString()}
                 >
-                  Published: {new Date(post?.publishedAt).toLocaleString()}
+                  Yayınlanma: {new Date(post.publishedAt).toLocaleDateString()}
                 </time>
                 <SocialShare />
               </div>
               <div className="single-post-content">
                 <Image
-                  src={post?.featuredImage}
-                  alt={post?.title}
+                  src={post.featuredImage}
+                  alt={post.title}
                   width={800}
                   height={450}
-                  className="w-full h-[476px] mb-6 object-cover"
+                  className="w-full h-auto mb-6 object-cover"
                   fetchPriority='high'
                 />
-                <div dangerouslySetInnerHTML={{ __html: post?.content }} />
-                <div className="flex space-x-4 mt-6 lg:hidden">
-                  <Link
-                    href="#"
-                    className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
-                  >
-                    <WhatsappLogo weight="fill" className="w-5 h-5 mr-2 text-green-500" />
-                    <span className="text-sm font-semibold">Share</span>
-                  </Link>
-                  <Link
-                    href="#"
-                    className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
-                  >
-                    <FacebookLogo weight="fill" className="w-5 h-5 mr-2 text-blue-600" />
-                    <span className="text-sm font-semibold">Share</span>
-                  </Link>
-                  <Link
-                    href="#"
-                    className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
-                  >
-                    <XLogo weight="fill" className="w-5 h-5 mr-2 text-black" />
-                    <span className="text-sm font-semibold">Share</span>
-                  </Link>
-                </div>
+                <div dangerouslySetInnerHTML={{ __html: post.content }} />
               </div>
-              <div className="single-post-footer">
-                <PostFooter />
+              <div className="flex space-x-4 mt-6 lg:hidden">
+                <Link
+                  href="#"
+                  className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
+                >
+                  <WhatsappLogo weight="fill" className="w-5 h-5 mr-2 text-green-500" />
+                  <span className="text-sm font-semibold">Share</span>
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
+                >
+                  <FacebookLogo weight="fill" className="w-5 h-5 mr-2 text-blue-600" />
+                  <span className="text-sm font-semibold">Share</span>
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
+                >
+                  <XLogo weight="fill" className="w-5 h-5 mr-2 text-black" />
+                  <span className="text-sm font-semibold">Share</span>
+                </Link>
               </div>
             </article>
           </div>
 
-          <div className="lg:w-[30%] mt-8 lg:mt-0 lg:sticky lg:top-4 lg:self-start">
-            <HomeSidebar/>
+          <div className="lg:w-[30%] mt-8 lg:mt-0">
+            <div className="sticky top-4">
+              <HomeSidebar />
+            </div>
           </div>
         </div>
       </div>

@@ -3,25 +3,60 @@
 import { db } from "@/lib/db";
 import { categories } from "@/lib/schema";
 import { categorySchema, CategorySchema } from '@/schemas/categorySchema';
-import { eq } from "drizzle-orm";
+import { eq,desc, sql } from "drizzle-orm";
+import { posts, postCategories } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 
 export async function getCategories() {
+  try {
+    const allCategories = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        slug: categories.slug,
+        isDefault: categories.isDefault,
+        postCount: sql<number>`count(${postCategories.postId})`.as('postCount'),
+      })
+      .from(categories)
+      .leftJoin(postCategories, eq(categories.id, postCategories.categoryId))
+      .groupBy(categories.id)
+      .orderBy(categories.name);
+
+    return allCategories.map(category => ({
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      checked: category.isDefault || false,
+      postCount: Number(category.postCount) || 0
+    }));
+  } catch (error) {
+    console.error("Kategoriler getirilirken hata oluştu:", error);
+    throw new Error("Kategoriler getirilemedi.");
+  }
+}
+  export async function getPostsByCategory(slug: string) {
     try {
-      const allCategories = await db.select().from(categories);
-      return allCategories.map(category => ({
-        id: category.id,
-        name: category.name,
-        slug: category.slug,
-        checked: category.isDefault || false, // isDefault true ise checked true olacak
-        postCount: 0 // Bu değeri gerçek post sayısıyla değiştirmeyi unutmayın
-      }));
+      const result = await db
+        .select({
+          id: posts.id,
+          title: posts.title,
+          slug: posts.slug,
+          excerpt: posts.excerpt,
+          featuredImage: posts.featuredImage,
+          createdAt: posts.createdAt,
+        })
+        .from(posts)
+        .innerJoin(postCategories, eq(posts.id, postCategories.postId))
+        .innerJoin(categories, eq(categories.id, postCategories.categoryId))
+        .where(eq(categories.slug, slug))
+        .orderBy(desc(posts.createdAt));
+  
+      return { posts: result, error: null };
     } catch (error) {
-      console.error("Kategoriler getirilirken hata oluştu:", error);
-      throw new Error(error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu");
+      console.error("Kategori postları getirilirken hata oluştu:", error);
+      return { posts: [], error: "Kategori postları getirilemedi." };
     }
   }
-  
 
 export async function getCategoryBySlug(slug: string) {
   try {

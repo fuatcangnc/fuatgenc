@@ -106,25 +106,25 @@ const Navbar: React.FC = () => {
             <div className="hidden md:flex items-center justify-center flex-1">
               <div className="flex space-x-8">
                 <Link
-                  href="/kategori"
+                  href="/kategori/seo-ogren"
                   className="text-sm font-bold hover:text-gray-600"
                 >
                   SEO Öğren
                 </Link>
                 <Link
-                  href="/kategori"
+                  href="/kategori/wordpress-seo"
                   className="text-sm font-bold hover:text-gray-600"
                 >
                   WordPress SEO
                 </Link>
                 <Link
-                  href="/kategori"
+                  href="/kategori/wordpress-temalar"
                   className="text-sm font-bold hover:text-gray-600"
                 >
                   WordPress Temaları
                 </Link>
                 <Link
-                  href="/kategori"
+                  href="/kategori/yapay-zeka"
                   className="text-sm font-bold hover:text-gray-600"
                 >
                   Yapay Zeka
