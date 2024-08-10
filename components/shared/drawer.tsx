@@ -3,10 +3,8 @@
 import React from 'react';
 import { X, Facebook, Twitter, Instagram } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+
+import Image from 'next/image';
 import {
   Drawer,
   DrawerClose,
@@ -14,6 +12,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
+import Link from 'next/link';
 
 interface DrawerComponentProps {
   isOpen: boolean;
@@ -28,8 +27,16 @@ const DrawerComponent: React.FC<DrawerComponentProps> = ({ isOpen, onClose }) =>
       <DrawerContent className="h-full w-full sm:w-80 bg-black text-white p-0 border-r-0">
         <DrawerHeader className="border-b border-gray-700 p-4">
           <DrawerTitle className="text-xl font-bold">
-            <span className="text-white">FITNESS</span>
-            <span className="text-red-600">+MUSCLE</span>
+          <div className="flex justify-center">
+            <Link href="/" className="flex items-center">
+              <Image
+                width={170}
+                height={70}
+                src={"/fuat-genc-logo.svg"}
+                alt=""
+              />
+            </Link>
+          </div>
           </DrawerTitle>
           <DrawerClose asChild>
             <Button variant="ghost" size="icon" className="absolute top-4 right-4" onClick={onClose}>
@@ -38,54 +45,38 @@ const DrawerComponent: React.FC<DrawerComponentProps> = ({ isOpen, onClose }) =>
           </DrawerClose>
         </DrawerHeader>
         
-        <div className="p-4">
-          <h2 className="text-lg font-semibold mb-4">Get the latest creative news from FooBar about art, design and business.</h2>
-          <form className="space-y-4">
-            <Input type="email" placeholder="Your email address.." className="bg-gray-800 border-gray-700" />
-            <Button className="w-full bg-red-600 hover:bg-red-700">SUBSCRIBE</Button>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
-              <Label htmlFor="terms" className="text-sm text-gray-300">
-                By signing up, you agree to the our terms and our Privacy Policy agreement.
-              </Label>
+        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <Link
+                href="/"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                HOME
+              </Link>
+              <Link
+                href="/features"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                FEATURES
+              </Link>
+              <Link
+                href="/health-fitness"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                HEALTH & FITNESS
+              </Link>
+              <Link
+                href="/workout-programs"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                WORKOUT PROGRAMS
+              </Link>
+              <Link
+                href="/buy-theme"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                BUY THEME
+              </Link>
             </div>
-          </form>
-        </div>
-
-        <Separator className="bg-gray-700" />
-
-        <div className="p-4">
-          <h2 className="text-xl font-bold mb-4">WHAT'S HOT</h2>
-          <div className="space-y-4">
-            <ArticlePreview 
-              title="Intensity and Insanity: The Real Life Story of Two Legend Bodybuilders"
-              date="Mar 15, 2021"
-              imageUrl="/api/placeholder/300/200"
-            />
-            <ArticlePreview 
-              title="This 5-Minute Workout Will Strengthen Your Core Without Sit-Ups"
-              date="Mar 14, 2021"
-              imageUrl="/api/placeholder/300/200"
-            />
-            <ArticlePreview 
-              title="4 Best Workout Supplements for Men – Workouts Magazine"
-              date="Mar 13, 2021"
-              imageUrl="/api/placeholder/300/200"
-            />
-          </div>
-        </div>
-
-        <div className="absolute bottom-4 left-4 flex space-x-4">
-          <Button variant="ghost" size="icon">
-            <Facebook className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon">
-            <Twitter className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon">
-            <Instagram className="h-5 w-5" />
-          </Button>
-        </div>
       </DrawerContent>
     </Drawer>
   );

@@ -17,22 +17,48 @@ function Footer(): JSX.Element {
     { icon: YoutubeLogo, link: "https://youtube.com" },
     { icon: InstagramLogo, link: "https://instagram.com" }
   ];
-  const araclar: string[] = ['Whois Sorgulama', 'SEO Analiz', 'Site Analiz', 'Sıra Bulucu', 'Kod/Tasarım Araçları', 'Site Araçları'];
-  const forumItems: string[] = ['İlanlar', 'Konular', 'Gelişmiş Arama', 'Şikayetim Var', 'Anketler'];
-  const digerSayfalar: string[] = ['Hakkımızda', 'Premium Üyelikler', 'Gizlilik Politikası', 'Mesafeli Satış Sözleşmesi', 'Teslimat ve İade Politikası', 'Hukuka Aykırılık Bildirimi'];
-  const altMenu: string[] = ['Hakkımızda', 'Reklam & İş Birlikleri', 'Bize Ulaşın'];
 
-  const contactItems: MenuItem[] = [
-    { icon: WhatsappLogo, text: 'WhatsApp', link: 'https://wa.me/yourwhatsappnumber' },
-    { icon: Phone, text: '05442179393' },
-    { icon: EnvelopeSimple, text: 'destek@seotrio.com' },
+  const araclar: { text: string; href: string }[] = [
+    { text: 'SEO Danışmanlığı', href: '/#' },
+    { text: 'SEO Analiz', href: '/#' },
+    { text: 'Ücretsiz SEO Eğitimi', href: '/#' },
+    { text: 'Blog', href: '/#' },
   ];
 
-  function renderMenuItems(items: string[]): JSX.Element[] {
-    return items.map(function(item: string): JSX.Element {
+  const forumItems: { text: string; href: string }[] = [
+    { text: 'SEO Sözlüğü', href: '/#' },
+    { text: 'Bilgi Merkezi', href: '/#' },
+    { text: 'Kaynaklar', href: '/#' },
+    { text: 'HTML Sitemap', href: '/#' },
+  ];
+
+  const digerSayfalar: { text: string; href: string }[] = [
+    { text: 'Hakkımızda', href: '/hakkimizda' },
+    { text: 'Premium Üyelikler', href: '/premium-uyelikler' },
+    { text: 'Gizlilik Politikası', href: '/gizlilik-politikasi' },
+    { text: 'Mesafeli Satış Sözleşmesi', href: '/mesafeli-satis-sozlesmesi' },
+    { text: 'Teslimat ve İade Politikası', href: '/teslimat-ve-iade-politikasi' },
+    { text: 'Hukuka Aykırılık Bildirimi', href: '/hukuka-aykirilik-bildirimi' }
+  ];
+
+  const altMenu: { text: string; href: string }[] = [
+    { text: 'Hakkımızda', href: '/hakkimizda' },
+    { text: 'Kullanım Şartları', href: '/kullanim-sartlari' },
+    { text: 'Gizlilik Politikası', href: '/gizlilik-politikasi' },
+    { text: 'İletişim', href: '/iletisim' }
+  ];
+
+  const contactItems: MenuItem[] = [
+    { icon: WhatsappLogo, text: 'WhatsApp', link: 'https://wa.me/+905530805798' },
+    { icon: Phone, text: '05530805798' },
+    { icon: EnvelopeSimple, text: 'bilgi@fuatgenc.com' },
+  ];
+
+  function renderMenuItems(items: { text: string; href: string }[]): JSX.Element[] {
+    return items.map(function(item: { text: string; href: string }): JSX.Element {
       return (
-        <li key={item}>
-          <Link href="#" className="hover:underline text-[13px] text-[#d1d4db]">{item}</Link>
+        <li key={item.text}>
+          <Link href={item.href} className="hover:underline text-[13px] text-[#d1d4db]">{item.text}</Link>
         </li>
       );
     });
@@ -60,7 +86,7 @@ function Footer(): JSX.Element {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo, Açıklama ve İletişim Bilgileri */}
           <div className="space-y-4 md:mr-auto">
-            <Link href="/" className="text-2xl font-bold">wm aracı</Link>
+            <Link href="/" className="text-2xl font-bold">Fuat Genc</Link>
             <p className="text-sm text-[#d1d4db]">
               En güvenilir SEO rehberiniz.
             </p>
@@ -80,7 +106,7 @@ function Footer(): JSX.Element {
 
           {/* Araçlar */}
           <div >
-            <h3 className="text-lg font-semibold mb-4 text-white ">Araçlar</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white ">Hizmetler</h3>
             <ul className="space-y-2">
               {renderMenuItems(araclar)}
             </ul>
@@ -88,7 +114,7 @@ function Footer(): JSX.Element {
 
           {/* WM Aracı Forum */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">WM Aracı Forum</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">Sayfalar</h3>
             <ul className="space-y-2">
               {renderMenuItems(forumItems)}
             </ul>
@@ -96,7 +122,7 @@ function Footer(): JSX.Element {
 
           {/* Diğer Sayfalar */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Diğer Sayfalar</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">Yazılar</h3>
             <ul className="space-y-2">
               {renderMenuItems(digerSayfalar)}
             </ul>
@@ -106,8 +132,8 @@ function Footer(): JSX.Element {
         {/* Alt Menü */}
         <div className="mt-8 pt-8 border-t border-[#2c2f38] flex flex-col md:flex-row justify-between items-center">
           <div className="flex space-x-4 mb-4 md:mb-0">
-            {altMenu.map(function(item: string): JSX.Element {
-              return <Link key={item} href="#" className="hover:underline text-[13px] text-[#d1d4db]">{item}</Link>;
+            {altMenu.map(function(item: { text: string; href: string }): JSX.Element {
+              return <Link key={item.text} href={item.href} className="hover:underline text-[13px] text-[#d1d4db]">{item.text}</Link>;
             })}
           </div>
           <p className="text-sm text-[#d1d4db]">Felo Studio tarafından tasarlanmıştır.</p>

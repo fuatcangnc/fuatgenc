@@ -4,7 +4,6 @@ import { getPosts } from '@/actions/posts.actions'
 
 async function PostCardContainer() {
   const posts = await getPosts(4); // İlk 4 postu getir
-  console.log(posts)
 
   return (
     <div className="space-y-4">
