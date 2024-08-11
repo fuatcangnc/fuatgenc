@@ -8,6 +8,7 @@ import SocialShare from "@/components/shared/single-post/social-share";
 import PostFooter from "@/components/shared/footer";
 import HomeSidebar from '@/components/shared/home-sidebar';
 import Script from 'next/script';
+import ClientSideContent from './ClientSideContent';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const post = await getPostBySlug(params.slug);
@@ -108,7 +109,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
                   className="w-full h-auto mb-6 object-cover"
                   fetchPriority='high'
                 />
-                <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                <ClientSideContent content={post.content} />
               </div>
               <div className="flex space-x-4 mt-6 lg:hidden">
                 <Link

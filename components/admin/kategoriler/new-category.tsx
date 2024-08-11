@@ -12,25 +12,18 @@ import Sidebar from './sidebar'
 import { MediaLibrarySelector } from '@/components/admin/media-library-selector'
 import { Edit, Check } from "lucide-react"
 import slugify from 'slugify'
-import { useCategoryStore } from '@/store/useCategoryStore'
 import { createCategory } from '@/actions/category.actions'
 import { useRouter } from 'next/navigation'
 import { toast } from "@/components/ui/use-toast"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { categorySchema } from '@/schemas/categorySchema'
+import { categorySchema, CategorySchema } from '@/schemas/categorySchema'
 
 function NewCategory() {
   const router = useRouter()
-  const {
-    name, slug, isEditingSlug, tempSlug, seoImage, description, isDefault,
-    seoTitle, seoDescription, isIndexed,
-    setName, setSlug, setIsEditingSlug, setTempSlug, setSeoImage,
-    setDescription, setIsDefault, setSeoTitle, setSeoDescription, setIsIndexed,
-    updateSlug, resetForm
-  } = useCategoryStore()
+  const [isEditingSlug, setIsEditingSlug] = React.useState(false)
 
-  const { control, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+  const { control, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       name: '',
@@ -44,46 +37,45 @@ function NewCategory() {
     }
   })
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value
-    setName(newName)
-    setValue('name', newName)
-    if (!isEditingSlug) {
-      const newSlug = slugify(newName, { lower: true, strict: true })
-      setSlug(newSlug)
-      setTempSlug(newSlug)
-      setValue('slug', newSlug)
+  const name = watch('name')
+  const slug = watch('slug')
+
+  React.useEffect(() => {
+    if (!isEditingSlug && name) {
+      setValue('slug', slugify(name, { lower: true, strict: true }))
     }
+  }, [name, isEditingSlug, setValue])
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('name', e.target.value)
   }
 
   const handleEditSlug = () => {
-    if (isEditingSlug) {
-      updateSlug(tempSlug, true)
-      setValue('slug', tempSlug)
-    }
     setIsEditingSlug(!isEditingSlug)
   }
 
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSlug = slugify(e.target.value, { lower: true, strict: true })
-    setTempSlug(newSlug)
-    setValue('slug', newSlug)
+    setValue('slug', slugify(e.target.value, { lower: true, strict: true }))
   }
 
   const handleImageSelect = (imageUrl: string) => {
-    setSeoImage(imageUrl)
     setValue('seoImage', imageUrl)
   }
 
   const handleRemoveImage = () => {
-    setSeoImage(null)
     setValue('seoImage', null)
   }
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: CategorySchema) => {
     try {
-      const result = await createCategory(data)
-      if (result.error) {
+      const result = await createCategory({
+        ...data,
+        description: data.description || null,
+        seoTitle: data.seoTitle || null,
+        seoDescription: data.seoDescription || null,
+        seoImage: data.seoImage || null
+      })
+      if ('error' in result) {
         toast({
           title: "Hata",
           description: result.error,
@@ -94,8 +86,9 @@ function NewCategory() {
           title: "Başarılı",
           description: "Kategori başarıyla oluşturuldu.",
         })
-        resetForm()
-        router.push('/admin/kategoriler')
+        reset() // Form alanlarını sıfırla
+        setIsEditingSlug(false) // Slug düzenleme modunu kapat
+        router.refresh() // Sayfayı yenile
       }
     } catch (error) {
       console.error("Kategori oluşturulurken bir hata oluştu:", error)
@@ -144,7 +137,6 @@ function NewCategory() {
                         id="permalink" 
                         placeholder="kategori-ismi" 
                         {...field}
-                        value={isEditingSlug ? tempSlug : field.value}
                         onChange={handleSlugChange}
                         className="flex-grow dark:bg-gray-700 dark:text-white dark:border-gray-600"
                         disabled={!isEditingSlug}
@@ -197,13 +189,13 @@ function NewCategory() {
               <h3 className="text-lg font-semibold">Arama Motoru Optimizasyonu</h3>
               
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="seo-title">SEO Başlığı</Label>
+                <Label htmlFor="seoTitle">SEO Başlığı</Label>
                 <Controller
                   name="seoTitle"
                   control={control}
                   render={({ field }) => (
                     <Input 
-                      id="seo-title" 
+                      id="seoTitle" 
                       placeholder="SEO Başlığı" 
                       {...field}
                     />
@@ -212,13 +204,13 @@ function NewCategory() {
                 {errors.seoTitle && <p className="text-red-500 text-sm">{errors.seoTitle.message}</p>}
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="seo-description">SEO Açıklaması</Label>
+                <Label htmlFor="seoDescription">SEO Açıklaması</Label>
                 <Controller
                   name="seoDescription"
                   control={control}
                   render={({ field }) => (
                     <Textarea 
-                      id="seo-description" 
+                      id="seoDescription" 
                       placeholder="SEO açıklaması" 
                       {...field}
                     />
@@ -227,7 +219,7 @@ function NewCategory() {
                 {errors.seoDescription && <p className="text-red-500 text-sm">{errors.seoDescription.message}</p>}
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="seo-image">SEO Görseli</Label>
+                <Label htmlFor="seoImage">SEO Görseli</Label>
                 <Controller
                   name="seoImage"
                   control={control}

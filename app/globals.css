@@ -118,3 +118,37 @@
   list-style: revert;
   padding-left: 20px;
 }
+.ql-editor pre.ql-syntax {
+  background-color: #23241f;
+  color: #f8f8f2;
+  overflow: visible;
+  white-space: pre-wrap;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.quill-content pre {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  padding: 1em;
+  white-space: pre-wrap;
+}
+
+.quill-content code {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.quill-content p {
+  margin-bottom: 1em;
+}
+
+.quill-content h1, .quill-content h2, .quill-content h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.quill-content ul, .quill-content ol {
+  padding-left: 2em;
+  margin-bottom: 1em;
+}

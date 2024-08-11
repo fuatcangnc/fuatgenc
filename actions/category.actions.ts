@@ -71,14 +71,19 @@ export async function getCategoryBySlug(slug: string) {
 export async function createCategory(data: CategorySchema) {
   try {
     const validatedData = categorySchema.parse(data);
-    const newCategory = await db.insert(categories)
-      .values({
-        name: validatedData.name,
+    const newCategory = await db.insert(categories as any)
+  .values({
+    name: validatedData.name,
         slug: validatedData.slug,
-        // Add other fields as needed, but ensure they're optional
-      })
-      .returning();
-    revalidatePath('/admin/kategoriler');
+        description: validatedData.description || null,
+        isDefault: validatedData.isDefault,
+        seoTitle: validatedData.seoTitle,
+        seoDescription: validatedData.seoDescription,
+        seoImage: validatedData.seoImage || null,
+        isIndexed: validatedData.isIndexed
+  })
+  .returning();
+    revalidatePath('/admin/kategoriler')
     return { category: newCategory[0] };
   } catch (error) {
     console.error("Kategori oluşturulurken hata oluştu:", error);
