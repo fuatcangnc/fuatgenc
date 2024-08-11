@@ -1,8 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-      domains: ['fkmrea3hlmnddby5.public.blob.vercel-storage.com'],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'fkmrea3hlmnddby5.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/**',
       },
+    ],
+  },
       async rewrites() {
         return [
           {
