@@ -2,12 +2,13 @@
 
 import { useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css';
 
 interface ClientSideContentProps {
   content: string;
 }
+
+let hljs: any;
+let hljsStylesLoaded = false;
 
 export default function ClientSideContent({ content }: ClientSideContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -17,7 +18,25 @@ export default function ClientSideContent({ content }: ClientSideContentProps) {
       const clean = DOMPurify.sanitize(content);
       contentRef.current.innerHTML = clean;
 
-      // Kod bloklarını işle ve renklendirmeyi uygula
+      if (!hljsStylesLoaded) {
+        import('highlight.js/styles/github.css').then(() => {
+          hljsStylesLoaded = true;
+        });
+      }
+
+      if (!hljs) {
+        import('highlight.js').then((mod) => {
+          hljs = mod.default;
+          highlightCode();
+        });
+      } else {
+        highlightCode();
+      }
+    }
+  }, [content]);
+
+  const highlightCode = () => {
+    if (hljs && contentRef.current) {
       const codeBlocks = contentRef.current.querySelectorAll('pre.ql-syntax');
       codeBlocks.forEach((block) => {
         if (block instanceof HTMLElement) {
@@ -32,7 +51,7 @@ export default function ClientSideContent({ content }: ClientSideContentProps) {
         }
       });
     }
-  }, [content]);
+  };
 
   return <div ref={contentRef} className="quill-content" />;
 }
