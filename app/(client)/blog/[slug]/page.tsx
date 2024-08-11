@@ -7,7 +7,8 @@ import Breadcrumb from "@/components/shared/breadcrumb";
 import SocialShare from "@/components/shared/single-post/social-share";
 import HomeSidebar from '@/components/shared/home-sidebar';
 import Script from 'next/script';
-import ClientSideContent from './ClientSideContent';
+import dynamic from 'next/dynamic';
+const ClientSideContent = dynamic(() => import('./ClientSideContent'), { ssr: false });
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const post = await getPostBySlug(params.slug);
