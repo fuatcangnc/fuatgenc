@@ -9,6 +9,7 @@ import PostFooter from "@/components/shared/footer";
 import HomeSidebar from '@/components/shared/home-sidebar';
 import Script from 'next/script';
 import ClientSideContent from './ClientSideContent';
+import { sanitizeContent } from '@/utils/sanitizer';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const post = await getPostBySlug(params.slug);
@@ -45,6 +46,9 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       "name": "Shana"
     }
   };
+
+  // Güvenli içerik oluşturma
+  const safeContent = await sanitizeContent(post.content);
 
   return (
     <>
@@ -109,7 +113,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
                   className="w-full h-auto mb-6 object-cover"
                   fetchPriority='high'
                 />
-                <ClientSideContent content={post.content} />
+                <ClientSideContent content={safeContent} />
               </div>
               <div className="flex space-x-4 mt-6 lg:hidden">
                 <Link

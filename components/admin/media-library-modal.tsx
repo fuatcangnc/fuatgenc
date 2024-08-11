@@ -5,9 +5,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MediaLibrary } from '@/components/admin/media-library'
 import { MediaFile } from '@/schemas/mediaLibrarySchema'
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
+import { getFiles, uploadFile } from '@/actions/media.actions'
+import { Button } from "@/components/ui/button"
+import { Loader2 } from "lucide-react"
 
 interface MediaLibraryModalProps {
   isOpen: boolean
@@ -20,40 +22,56 @@ export const MediaLibraryModal: React.FC<MediaLibraryModalProps> = ({ isOpen, on
   const [isUploading, setIsUploading] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([])
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const { toast } = useToast()
 
   useEffect(() => {
     if (isOpen) {
       setIsLoading(true)
       setError(null)
-      // Simüle edilmiş API çağrısı
-      const loadMediaFiles = async () => {
-        try {
-          // Gerçek uygulamada, burada API'den medya dosyalarını yükleyin
-          await new Promise(resolve => setTimeout(resolve, 1000)) // Simüle edilmiş gecikme
-          setIsLoading(false)
-        } catch (err) {
-          console.error("Medya dosyaları yüklenirken hata oluştu:", err)
-          setError("Medya dosyaları yüklenirken bir hata oluştu. Lütfen tekrar deneyin.")
-          setIsLoading(false)
-        }
-      }
-      loadMediaFiles()
+      fetchMediaFiles()
     }
   }, [isOpen])
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  const fetchMediaFiles = async () => {
+    try {
+      const files = await getFiles()
+      setMediaFiles(files)
+      setIsLoading(false)
+    } catch (err) {
+      console.error("Medya dosyaları yüklenirken hata oluştu:", err)
+      setError("Medya dosyaları yüklenirken bir hata oluştu. Lütfen tekrar deneyin.")
+      setIsLoading(false)
+    }
+  }
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setSelectedFile(file)
+    }
+  }
+
+  const handleFileUpload = async () => {
+    if (!selectedFile) return
+  
     setIsUploading(true)
     try {
-      // Gerçek uygulamada, burada dosya yükleme işlemini gerçekleştirin
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simüle edilmiş yükleme
+      const formData = new FormData()
+      formData.append('file', selectedFile)
+      formData.append('alternativeText', '')
+      formData.append('title', '')
+      formData.append('description', '')
+  
+      const uploadedFile = await uploadFile(formData)
+      setMediaFiles(prev => [...prev, uploadedFile])
       toast({
         title: "Dosya yüklendi",
-        description: `${file.name} başarıyla yüklendi.`,
+        description: `${selectedFile.name} başarıyla yüklendi.`,
       })
+      setActiveTab("library")
+      setSelectedFile(null)
     } catch (err) {
       console.error("Dosya yüklenirken hata oluştu:", err)
       toast({
@@ -89,17 +107,32 @@ export const MediaLibraryModal: React.FC<MediaLibraryModalProps> = ({ isOpen, on
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <MediaLibrary onSelect={onSelect} />
+              <MediaLibrary onSelect={onSelect} mediaFiles={mediaFiles} />
             )}
           </TabsContent>
           <TabsContent value="upload">
             <div className="space-y-4">
               <Input
                 type="file"
-                onChange={handleFileUpload}
+                onChange={handleFileSelect}
                 disabled={isUploading}
               />
-              {isUploading && <p>Yükleniyor...</p>}
+              {selectedFile && (
+                <p>Seçilen dosya: {selectedFile.name}</p>
+              )}
+              <Button
+                onClick={handleFileUpload}
+                disabled={!selectedFile || isUploading}
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Yükleniyor...
+                  </>
+                ) : (
+                  "Dosyayı Yükle"
+                )}
+              </Button>
             </div>
           </TabsContent>
         </Tabs>

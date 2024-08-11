@@ -20,22 +20,14 @@ export const MediaLibrarySelector: React.FC<MediaLibrarySelectorProps> = ({
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false)
 
   const handleOpenMediaLibrary = useCallback(() => {
-    console.log("Opening media library")
-    try {
-      setIsMediaLibraryOpen(true)
-    } catch (error) {
-      console.error("Error opening media library:", error)
-      // Hata durumunda kullanıcıya bir bildirim gösterin
-    }
+    setIsMediaLibraryOpen(true)
   }, [])
 
   const handleCloseMediaLibrary = useCallback(() => {
-    console.log("Closing media library")
     setIsMediaLibraryOpen(false)
   }, [])
 
   const handleImageSelect = useCallback((image: MediaFile) => {
-    console.log("Image selected:", image)
     onImageSelect(image.url)
     setIsMediaLibraryOpen(false)
   }, [onImageSelect])
@@ -58,6 +50,7 @@ export const MediaLibrarySelector: React.FC<MediaLibrarySelectorProps> = ({
               variant="outline" 
               onClick={handleOpenMediaLibrary}
               className="flex-1"
+              type="button"
             >
               Değiştir
             </Button>
@@ -65,6 +58,7 @@ export const MediaLibrarySelector: React.FC<MediaLibrarySelectorProps> = ({
               variant="outline" 
               onClick={onImageRemove}
               className="flex-1"
+              type="button"
             >
               Kaldır
             </Button>
@@ -75,6 +69,7 @@ export const MediaLibrarySelector: React.FC<MediaLibrarySelectorProps> = ({
           variant="outline" 
           onClick={handleOpenMediaLibrary}
           className="w-full"
+          type="button"
         >
           Medya Kütüphanesinden Görsel Seç
         </Button>

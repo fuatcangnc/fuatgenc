@@ -86,9 +86,9 @@ function NewCategory() {
           title: "Başarılı",
           description: "Kategori başarıyla oluşturuldu.",
         })
-        reset() // Form alanlarını sıfırla
-        setIsEditingSlug(false) // Slug düzenleme modunu kapat
-        router.refresh() // Sayfayı yenile
+        reset()
+        setIsEditingSlug(false)
+        router.refresh()
       }
     } catch (error) {
       console.error("Kategori oluşturulurken bir hata oluştu:", error)
@@ -226,7 +226,10 @@ function NewCategory() {
                   render={({ field }) => (
                     <MediaLibrarySelector
                       selectedImage={field.value}
-                      onImageSelect={handleImageSelect}
+                      onImageSelect={(imageUrl) => {
+                        field.onChange(imageUrl)
+                        handleImageSelect(imageUrl)
+                      }}
                       onImageRemove={handleRemoveImage}
                     />
                   )}

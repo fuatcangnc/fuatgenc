@@ -5,69 +5,64 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { X, ArrowSquareOut, Trash, ArrowClockwise } from "@phosphor-icons/react"
-import { getFiles, deleteFile, uploadFile, updateFileMetadata } from '@/actions/media.actions'
+import { deleteFile, updateFileMetadata } from '@/actions/media.actions'
 import { MediaFile } from '@/schemas/mediaLibrarySchema'
 
 interface MediaLibraryProps {
-  onSelect?: (file: MediaFile) => void
+  onSelect: (file: MediaFile) => void
+  mediaFiles: MediaFile[]
 }
 
-export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelect }) => {
-  const [files, setFiles] = useState<MediaFile[]>([])
+export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelect, mediaFiles }) => {
   const [selectedFile, setSelectedFile] = useState<MediaFile | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('name')
-  const [isUploading, setIsUploading] = useState(false)
+  const [sortedFiles, setSortedFiles] = useState<MediaFile[]>([])
 
   useEffect(() => {
-    fetchFiles()
-  }, [])
-
-  const fetchFiles = async () => {
-    const fetchedFiles = await getFiles()
-    setFiles(fetchedFiles)
-  }
+    // mediaFiles değiştiğinde sıralama ve filtrelemeyi yeniden uygula
+    const newSortedFiles = [...mediaFiles].sort((a, b) => {
+      if (sortBy === 'name') {
+        return a.name.localeCompare(b.name)
+      } else if (sortBy === 'date') {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      }
+      return 0
+    })
+    setSortedFiles(newSortedFiles.filter(file =>
+      file.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ))
+  }, [mediaFiles, sortBy, searchTerm])
 
   const handleFileSelect = (file: MediaFile) => {
-    if (onSelect) {
-      onSelect(file)
-    } else {
-      setSelectedFile(file)
-    }
+    setSelectedFile(file)
+    onSelect(file)
   }
 
   const handleDelete = async (file: MediaFile) => {
     if (window.confirm(`Are you sure you want to delete ${file.name}?`)) {
       await deleteFile(file.name)
-      await fetchFiles()
       if (selectedFile && selectedFile.id === file.id) {
         setSelectedFile(null)
       }
+      // Dosya silindikten sonra mediaFiles'ı güncelle
+      const updatedFiles = mediaFiles.filter(f => f.id !== file.id)
+      setSortedFiles(updatedFiles)
     }
   }
 
   const handleUpdate = async () => {
     if (selectedFile) {
       await updateFileMetadata(selectedFile.id, selectedFile)
-      await fetchFiles()
+      // Güncelleme işleminden sonra mediaFiles'ı yenile
+      const updatedFiles = mediaFiles.map(f => 
+        f.id === selectedFile.id ? selectedFile : f
+      )
+      setSortedFiles(updatedFiles)
     }
   }
-
-  const filteredFiles = files.filter(file =>
-    file.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
-  const sortedFiles = [...filteredFiles].sort((a, b) => {
-    if (sortBy === 'name') {
-      return a.name.localeCompare(b.name)
-    } else if (sortBy === 'date') {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    }
-    return 0
-  })
 
   return (
     <div className="flex h-full">
@@ -109,7 +104,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelect }) => {
           ))}
         </div>
       </div>
-      {selectedFile && !onSelect && (
+      {selectedFile && (
         <div className="w-1/3 bg-white p-4 shadow-lg overflow-y-auto border-l h-full">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">File Details</h2>
