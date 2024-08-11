@@ -2,7 +2,7 @@ import { getPostBySlug } from '@/actions/posts.actions';
 import { notFound } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
-import { WhatsappLogo, FacebookLogo, XLogo, ChatCircleText } from "@phosphor-icons/react/dist/ssr";
+import { FacebookLogo, XLogo, PinterestLogo, LinkedinLogo, ChatCircleText } from "@phosphor-icons/react/dist/ssr";
 import Breadcrumb from "@/components/shared/breadcrumb";
 import SocialShare from "@/components/shared/single-post/social-share";
 import HomeSidebar from '@/components/shared/home-sidebar';
@@ -46,6 +46,9 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     }
   };
 
+  const shareUrl = `${process.env.SITE_URL}/${post.slug}`; // Replace with your actual domain
+  const shareText = encodeURIComponent(post.title);
+
   return (
     <>
       <Script
@@ -69,19 +72,49 @@ export default async function BlogPost({ params }: { params: { slug: string } })
             <span className="text-xs font-semibold text-gray-600 mb-2">
               Paylaş
             </span>
-            <Link href="#" className="flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full  bg-white shadow-md  flex items-center justify-center">
-                <WhatsappLogo weight="fill" className="w-6 h-6 text-green-600" />
-              </div>
-            </Link>
-            <Link href="#" className="flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-white shadow-md  flex items-center justify-center">
+            <Link 
+              href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex flex-col items-center"
+              title="Facebook'ta Paylaş"
+            >
+              <div className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center">
                 <FacebookLogo weight="fill" className="w-6 h-6 text-blue-600" />
               </div>
             </Link>
-            <Link href="#" className="flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full  bg-white shadow-md flex items-center justify-center">
-                <XLogo className="w-6 h-6 text-blue-500" />
+            <Link 
+              href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex flex-col items-center"
+              title="X'te Paylaş"
+            >
+              <div className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center">
+                <XLogo className="w-6 h-6 text-black" />
+              </div>
+            </Link>
+            
+            <Link 
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${shareText}`} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex flex-col items-center"
+              title="LinkedIn'de Paylaş"
+            >
+              <div className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center">
+                <LinkedinLogo weight="fill" className="w-6 h-6 text-[#0077B5]" />
+              </div>
+            </Link>
+            <Link 
+              href={`https://pinterest.com/pin/create/button/?url=${shareUrl}&media=${post.featuredImage}&description=${shareText}`} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex flex-col items-center"
+              title="Pinterest'te Paylaş"
+            >
+              <div className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center">
+                <PinterestLogo weight="fill" className="w-6 h-6 text-red-600" />
               </div>
             </Link>
           </div>
@@ -113,25 +146,44 @@ export default async function BlogPost({ params }: { params: { slug: string } })
               </div>
               <div className="flex space-x-4 mt-6 lg:hidden">
                 <Link
-                  href="#"
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
-                >
-                  <WhatsappLogo weight="fill" className="w-5 h-5 mr-2 text-green-500" />
-                  <span className="text-sm font-semibold">Share</span>
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
+                  title="Facebook'ta Paylaş"
                 >
                   <FacebookLogo weight="fill" className="w-5 h-5 mr-2 text-blue-600" />
-                  <span className="text-sm font-semibold">Share</span>
+                  <span className="text-sm font-semibold">Paylaş</span>
                 </Link>
                 <Link
-                  href="#"
+                  href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
+                  title="X'te Paylaş"
                 >
                   <XLogo weight="fill" className="w-5 h-5 mr-2 text-black" />
-                  <span className="text-sm font-semibold">Share</span>
+                  <span className="text-sm font-semibold">Paylaş</span>
+                </Link>
+                <Link
+                  href={`https://pinterest.com/pin/create/button/?url=${shareUrl}&media=${post.featuredImage}&description=${shareText}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
+                  title="Pinterest'te Paylaş"
+                >
+                  <PinterestLogo weight="fill" className="w-5 h-5 mr-2 text-red-600" />
+                  <span className="text-sm font-semibold">Paylaş</span>
+                </Link>
+                <Link
+                  href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${shareText}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
+                  title="LinkedIn'de Paylaş"
+                >
+                  <LinkedinLogo weight="fill" className="w-5 h-5 mr-2 text-blue-700" />
+                  <span className="text-sm font-semibold">Paylaş</span>
                 </Link>
               </div>
             </article>
