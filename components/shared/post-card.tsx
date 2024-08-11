@@ -11,6 +11,7 @@ interface PostCardProps {
   excerpt: string;
   createdAt: Date;
   slug: string;
+  headingLevel?: 'h2' | 'h3'; // Yeni prop ekledik
 }
 
 export function PostCard({
@@ -20,8 +21,10 @@ export function PostCard({
   excerpt,
   createdAt,
   slug,
+  headingLevel = 'h2', // Varsayılan değer h2
 }: PostCardProps) {
-  const timeAgo = new Date(createdAt).toLocaleString(); // Basit bir zaman gösterimi, daha gelişmiş bir çözüm kullanabilirsiniz
+  const timeAgo = new Date(createdAt).toLocaleString();
+  const HeadingTag = headingLevel; // Dinamik başlık etiketi
 
   return (
     <Card className="flex flex-col md:flex-row overflow-hidden">
@@ -34,11 +37,11 @@ export function PostCard({
             {category}
           </span>
           <Link href={`/${slug}`}>
-            <h3 className="font-semibold text-[20px] transition-colors cursor-pointer group">
+            <HeadingTag className="font-semibold text-[20px] transition-colors cursor-pointer group">
               <span className="bg-left-bottom bg-gradient-to-r from-green-500 to-green-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-300 ease-out">
                 {title}
               </span>
-            </h3>
+            </HeadingTag>
           </Link>
           <p className="text-gray-600 text-[14px]">{excerpt}</p>
         </CardContent>

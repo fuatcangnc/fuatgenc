@@ -94,10 +94,17 @@ function Footer(): JSX.Element {
               {renderContactItems()}
             </div>
             <div className="flex space-x-4">
-              {socialIcons.map(function({ icon: Icon, link }: { icon: React.ElementType; link: string }, index: number): JSX.Element {
+            {socialIcons.map(function({ icon: Icon, link, name }: { icon: React.ElementType; link: string; name: string }, index: number): JSX.Element {
                 return (
-                  <Link key={index} href={link} target="_blank" rel="noopener noreferrer nofollow external">
+                  <Link 
+                    key={index} 
+                    href={link} 
+                    target="_blank" 
+                    rel="noopener noreferrer nofollow external"
+                    aria-label={`${name} sayfamızı ziyaret edin`}
+                  >
                     <Icon size={20} className="text-[#d1d4db] hover:text-white transition-colors duration-300" />
+                    <span className="sr-only">{name}</span>
                   </Link>
                 );
               })}
