@@ -8,7 +8,6 @@ import {
   Instagram,
   Video,
   Search,
-  Moon,
   Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,6 @@ import Image from "next/image";
 import Drawer from "./drawer";
 
 const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
@@ -30,6 +28,7 @@ const Navbar: React.FC = () => {
                 href="#"
                 target="_black"
                 rel="nofollow noopener"
+                title="Facebook"
                 className="w-[42px] h-[42px] bg-[#222222] rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
               >
                 <Facebook className="text-white w-5 h-5" />
@@ -40,6 +39,7 @@ const Navbar: React.FC = () => {
                 href="#"
                 target="_black"
                 rel="nofollow noopener"
+                title="Twitter"
                 className="w-[42px] h-[42px] bg-[#222222] rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
               >
                 <Twitter className="text-white w-5 h-5" />
@@ -50,6 +50,7 @@ const Navbar: React.FC = () => {
                 href="#"
                 target="_black"
                 rel="nofollow noopener"
+                title="Instagram"
                 className="w-[42px] h-[42px] bg-[#222222] rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
               >
                 <Instagram className="text-white w-5 h-5" />
@@ -60,6 +61,7 @@ const Navbar: React.FC = () => {
                 href="#"
                 target="_black"
                 rel="nofollow noopener"
+                title="Video"
                 className="w-[42px] h-[42px] bg-[#222222] rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
               >
                 <Video className="text-white w-5 h-5" />
@@ -72,7 +74,8 @@ const Navbar: React.FC = () => {
                 width={170}
                 height={70}
                 src={"/fuat-genc-logo.svg"}
-                alt=""
+                alt="fuat genc logo"
+                title="Ana Sayfa"
               />
             </Link>
           </div>
@@ -89,30 +92,35 @@ const Navbar: React.FC = () => {
                 <Link
                   href="/kategori/seo-ogren"
                   className="text-sm font-bold hover:text-gray-600"
+                  title="SEO Öğren"
                 >
                   SEO Öğren
                 </Link>
                 <Link
                   href="/kategori/wordpress-seo"
                   className="text-sm font-bold hover:text-gray-600"
+                  title="WordPress SEO"
                 >
                   WordPress SEO
                 </Link>
                 <Link
                   href="/kategori/wordpress-temalari"
                   className="text-sm font-bold hover:text-gray-600"
+                  title="WordPress Temaları"
                 >
                   WordPress Temaları
                 </Link>
                 <Link
                   href="/kategori/yapay-zeka"
                   className="text-sm font-bold hover:text-gray-600"
+                  title="Yapay Zeka"
                 >
                   Yapay Zeka
                 </Link>
                 <Link
                   href="/iletisim"
                   className="text-sm font-bold hover:text-gray-600"
+                  title="İletişim"
                 >
                   İletişim
                 </Link>
@@ -123,6 +131,8 @@ const Navbar: React.FC = () => {
               size="icon"
               onClick={() => setIsDrawerOpen(true)}
               className="sm:flex lg:hidden"
+              role="button"
+              title="Mobil Menü"
             >
               <Menu className="h-6 w-6" />
             </Button>
@@ -136,6 +146,8 @@ const Navbar: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 className="hover:bg-transparent p-0"
+                role="button"
+                title="Arama"
               >
                 <Search className="h-6 w-6" />
               </Button>
