@@ -14,26 +14,29 @@ export default function ClientSideContent({ content }: ClientSideContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (contentRef.current) {
-      const clean = DOMPurify.sanitize(content);
-      contentRef.current.innerHTML = clean;
-
-      if (!hljsStylesLoaded) {
-        import('highlight.js/styles/github.css').then(() => {
-          hljsStylesLoaded = true;
-        });
-      }
-
-      if (!hljs) {
-        import('highlight.js').then((mod) => {
-          hljs = mod.default;
+    if (typeof window !== 'undefined') {
+      if (contentRef.current) {
+        const clean = DOMPurify.sanitize(content);
+        contentRef.current.innerHTML = clean;
+  
+        if (!hljsStylesLoaded) {
+          import('highlight.js/styles/github.css').then(() => {
+            hljsStylesLoaded = true;
+          });
+        }
+  
+        if (!hljs) {
+          import('highlight.js').then((mod) => {
+            hljs = mod.default;
+            highlightCode();
+          });
+        } else {
           highlightCode();
-        });
-      } else {
-        highlightCode();
+        }
       }
     }
   }, [content]);
+  
 
   const highlightCode = () => {
     if (hljs && contentRef.current) {
