@@ -1,11 +1,40 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from 'react'
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from '@/components/ui/textarea';
 import { createContactForm } from '@/actions/contact-form.actions';
+import { useFormStatus } from 'react-dom'
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <Button 
+      type="submit" 
+      className="min-h-[50px] bg-[#02CA96] hover:bg-[#02A77A] text-white rounded-none"
+      disabled={pending}
+    >
+      {pending ? 'Mesajınız Gönderiliyor...' : 'İLETİŞİME GEÇ'}
+    </Button>
+  )
+}
 
 function ContactForm() {
+  const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  async function handleSubmit(formData: FormData) {
+    setFormStatus('idle');
+    const result = await createContactForm(formData);
+    if (result.success) {
+      setFormStatus('success');
+    } else {
+      setFormStatus('error');
+    }
+  }
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">İletişim</h1>
@@ -17,7 +46,7 @@ function ContactForm() {
           <p className="text-center text-sm mb-4">
             Sadece 24 Saat İçerisinde Cevap Vereceğimden. Hiç Şüpheniz Olmasın.
           </p>
-          <form action={createContactForm} className="space-y-4 flex flex-col items-center">
+          <form action={handleSubmit} className="space-y-4 flex flex-col items-center">
             <Input
               name="name"
               placeholder="Adınız"
@@ -28,10 +57,14 @@ function ContactForm() {
               placeholder="Mesajınız"
               className="w-full rounded-none"
             />
-            <Button type="submit" className="min-h-[50px] bg-[#02CA96] hover:bg-[#02A77A] text-white rounded-none">
-              İLETİŞİME GEÇ
-            </Button>
+            <SubmitButton />
           </form>
+          {formStatus === 'success' && (
+            <p className="text-green-500 mt-2">Mesajınız başarıyla gönderildi!</p>
+          )}
+          {formStatus === 'error' && (
+            <p className="text-red-500 mt-2">Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.</p>
+          )}
         </CardContent>
       </Card>
     </div>
