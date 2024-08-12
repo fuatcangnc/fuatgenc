@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from '@/components/ui/textarea';
 import { createContactForm } from '@/actions/contact-form.actions';
 import { useFormStatus } from 'react-dom'
-import { useReCaptcha } from 'next-recaptcha-v3'
+import { ReCaptchaProvider, useReCaptcha } from 'next-recaptcha-v3'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -23,7 +23,7 @@ function SubmitButton() {
   )
 }
 
-function ContactForm() {
+function ContactFormContent() {
   const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const { executeRecaptcha } = useReCaptcha()
 
@@ -82,4 +82,10 @@ function ContactForm() {
   )
 }
 
-export default ContactForm
+export default function ContactForm() {
+  return (
+    <ReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}>
+      <ContactFormContent />
+    </ReCaptchaProvider>
+  )
+}
