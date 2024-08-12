@@ -51,7 +51,11 @@ export const googleFormSchema = pgTable("google_forms", {
   googleVerificationCode: text("google_verification_code"),
   googleAnalyticsCode: text("google_analytics_code"),
   captchaSiteKey: text("captcha_site_key"),
+  microsoftClarityCode: text("microsoft_clarity_code"), // Yeni eklenen alan
 })
+
+export type GoogleForm = typeof googleFormSchema.$inferSelect;
+export type NewGoogleForm = typeof googleFormSchema.$inferInsert;
 
 export const whatsAppForms = pgTable('whatsapp_forms', {
   id: serial('id').primaryKey(),

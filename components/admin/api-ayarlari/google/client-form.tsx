@@ -3,27 +3,42 @@
 import { useFormState, useFormStatus } from 'react-dom'
 import { useToast } from "@/components/ui/use-toast"
 import { useEffect } from 'react'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { googleFormSchema, GoogleFormData } from "@/schemas/apiAyarlariSchema"
+
+interface FormState {
+  message: string | null;
+  success: boolean | null;
+  errors: Partial<Record<keyof GoogleFormData, string[]>>;
+}
+
+interface ClientFormProps {
+  currentForm: GoogleFormData | null;
+  handleSubmit: (prevState: FormState, formData: FormData) => Promise<FormState>;
+}
 
 function SubmitButton() {
   const { pending } = useFormStatus()
-  
+
   return (
-    <button 
-      type="submit" 
-      disabled={pending}
-      className={`w-full p-2 text-white rounded ${pending ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
-    >
-      {pending ? 'İşlem yapılıyor...' : 'Kaydet'}
-    </button>
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? 'Kaydediliyor...' : 'Kaydet'}
+    </Button>
   )
 }
 
-export default function ClientForm({ currentForm, handleSubmit }) {
+export default function ClientForm({ currentForm, handleSubmit }: ClientFormProps) {
   const { toast } = useToast()
-  const initialState = { message: null, success: null }
+  const initialState: FormState = { message: null, success: null, errors: {} }
   const [state, formAction] = useFormState(handleSubmit, initialState)
 
   useEffect(() => {
+    console.log("Current state:", state);
     if (state.message) {
       toast({
         title: state.success ? "Başarılı" : "Hata",
@@ -34,53 +49,69 @@ export default function ClientForm({ currentForm, handleSubmit }) {
   }, [state, toast])
 
   return (
-    <form action={formAction} className="space-y-6 p-4 border rounded shadow-md">
-      {currentForm && <input type="hidden" name="id" value={currentForm.id} />}
-      <div>
-        <label htmlFor="googleVerificationCode" className="block mb-2">
-          Google Site Doğrulama Kodu
-        </label>
-        <input
-          id="googleVerificationCode"
-          type="text"
-          name="googleVerificationCode"
-          placeholder="Google Site Doğrulama Kodu"
-          required
-          className="w-full p-2 border rounded"
-          defaultValue={currentForm?.googleVerificationCode || ""}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="googleAnalyticsCode" className="block mb-2">
-          Google Analytics Kodu
-        </label>
-        <textarea
-          id="googleAnalyticsCode"
-          name="googleAnalyticsCode"
-          placeholder="Google Analytics Kodu"
-          required
-          className="w-full p-2 border rounded"
-          defaultValue={currentForm?.googleAnalyticsCode || ""}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="captchaSiteKey" className="block mb-2">
-          reCAPTCHA Site Anahtarı
-        </label>
-        <input
-          id="captchaSiteKey"
-          type="text"
-          name="captchaSiteKey"
-          placeholder="reCAPTCHA Site Anahtarı"
-          required
-          className="w-full p-2 border rounded"
-          defaultValue={currentForm?.captchaSiteKey || ""}
-        />
-      </div>
-
-      <SubmitButton />
-    </form>
+    <Card className="w-full min-w-full">
+      <CardHeader>
+        <CardTitle>API Ayarları</CardTitle>
+      </CardHeader>
+      <form action={formAction}>
+        <CardContent className="space-y-4">
+          {currentForm && <input type="hidden" name="id" value={currentForm.id} />}
+          <div className="space-y-2">
+            <Label htmlFor="googleVerificationCode">Google Site Doğrulama Kodu</Label>
+            <Input
+              id="googleVerificationCode"
+              name="googleVerificationCode"
+              placeholder="Google Site Doğrulama Kodu"
+              defaultValue={currentForm?.googleVerificationCode || ""}
+            />
+            {state.errors.googleVerificationCode && (
+              <p className="text-red-500 text-sm mt-1">{state.errors.googleVerificationCode[0]}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="googleAnalyticsCode">Google Analytics Kodu</Label>
+            <Textarea
+              id="googleAnalyticsCode"
+              name="googleAnalyticsCode"
+              placeholder="Google Analytics Kodu"
+              defaultValue={currentForm?.googleAnalyticsCode || ""}
+            />
+            {state.errors.googleAnalyticsCode && (
+              <p className="text-red-500 text-sm mt-1">{state.errors.googleAnalyticsCode[0]}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="captchaSiteKey">reCAPTCHA Site Anahtarı</Label>
+            <Input
+              id="captchaSiteKey"
+              name="captchaSiteKey"
+              placeholder="reCAPTCHA Site Anahtarı"
+              defaultValue={currentForm?.captchaSiteKey || ""}
+            />
+            {state.errors.captchaSiteKey && (
+              <p className="text-red-500 text-sm mt-1">{state.errors.captchaSiteKey[0]}</p>
+            )}
+          </div>
+          
+          <Separator className="my-4" />
+          
+          <div className="space-y-2">
+            <Label htmlFor="microsoftClarityCode">Microsoft Clarity Kodu</Label>
+            <Input
+              id="microsoftClarityCode"
+              name="microsoftClarityCode"
+              placeholder="Microsoft Clarity Kodu"
+              defaultValue={currentForm?.microsoftClarityCode || ""}
+            />
+            {state.errors.microsoftClarityCode && (
+              <p className="text-red-500 text-sm mt-1">{state.errors.microsoftClarityCode[0]}</p>
+            )}
+          </div>
+        </CardContent>
+        <CardFooter>
+          <SubmitButton />
+        </CardFooter>
+      </form>
+    </Card>
   )
 }

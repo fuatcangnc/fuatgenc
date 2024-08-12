@@ -30,7 +30,7 @@ function getPages(dir: string): string[] {
 }
 
 export async function GET() {
-  const baseUrl = process.env.SITE_URL || 'https://fuatgenc.vercel.app'
+  const baseUrl = process.env.SITE_URL
   const pages = getPages('(client)')
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

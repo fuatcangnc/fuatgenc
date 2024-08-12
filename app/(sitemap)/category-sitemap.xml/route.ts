@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getCategories } from '@/actions/category.actions'
 
 export async function GET() {
-  const baseUrl = process.env.SITE_URL || 'https://fuatgenc.vercel.app'
+  const baseUrl = process.env.SITE_URL
   
   try {
     const categories = await getCategories()

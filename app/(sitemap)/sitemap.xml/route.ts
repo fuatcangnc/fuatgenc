@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 export const revalidate = 36;
 
 export async function GET() {
-  const baseUrl = process.env.SITE_URL || 'https://fuatgenc.vercel.app'
+  const baseUrl = process.env.SITE_URL
   const currentDate = new Date().toISOString()
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
