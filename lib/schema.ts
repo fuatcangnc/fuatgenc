@@ -208,3 +208,13 @@ export const postCategoriesRelations = relations(postCategories, ({ one }) => ({
 
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
+
+export const contactForm = pgTable('contact_form', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  message: text('message').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export type ContactForm = typeof contactForm.$inferSelect;
+export type NewContactForm = typeof contactForm.$inferInsert;

@@ -23,8 +23,8 @@ export async function addGoogleForm(formData: FormData) {
 
 // GET: Tüm Google form verilerini alma
 export async function getGoogleForms() {
-  const forms = await db.select().from(googleFormSchema)
-  return forms
+  const forms = await db.select().from(googleFormSchema).limit(1);
+  return forms;
 }
 
 // UPDATE: Belirli bir Google form verisini güncelleme
