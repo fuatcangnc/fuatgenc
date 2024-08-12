@@ -4,8 +4,9 @@ import { db } from "@/lib/db";
 import { ContactForm, contactForm, NewContactForm } from "@/lib/schema";
 import { contactFormSchema } from "@/schemas/contactFormSchema";
 import { revalidatePath } from "next/cache";
-import { sendEmail } from "@/utils/nodemailer";
 import { eq } from "drizzle-orm";
+import { sendEmail } from "@/utils/nodemailer";
+
 export async function createContactForm(formData: FormData) {
   const name = formData.get('name') as string;
   const message = formData.get('message') as string;
@@ -20,7 +21,7 @@ export async function createContactForm(formData: FormData) {
     
     // E-posta gönder
     const emailResult = await sendEmail({
-      to: process.env.CONTACT_FORM_RECIPIENT || 'your-email@example.com',
+      to: process.env.CONTACT_FORM_RECIPIENT || '',
       subject: 'Yeni İletişim Formu Mesajı',
       text: `İsim: ${name}\nMesaj: ${message}`,
       html: `<h1>Yeni İletişim Formu Mesajı</h1><p><strong>İsim:</strong> ${name}</p><p><strong>Mesaj:</strong> ${message}</p>`,
