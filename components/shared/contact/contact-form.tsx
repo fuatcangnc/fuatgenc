@@ -77,7 +77,7 @@ function ContactFormContent() {
             <SubmitButton />
           </form>
           {formStatus === 'success' && (
-            <p className="text-green-500 mt-2">Mesajınız başarıyla gönderildi!</p>
+            <p className="text-green-500 mt-2">Mesajınız başarıyla gönderildi</p>
           )}
           {formStatus === 'error' && (
             <p className="text-red-500 mt-2">Mesajınız 10 karakterden az olamaz.</p>
