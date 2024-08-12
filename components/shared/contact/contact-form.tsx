@@ -73,7 +73,7 @@ function ContactFormContent() {
             <p className="text-green-500 mt-2">Mesajınız başarıyla gönderildi!</p>
           )}
           {formStatus === 'error' && (
-            <p className="text-red-500 mt-2">Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.</p>
+            <p className="text-red-500 mt-2">Mesajınız 10 karakterden az olamaz.</p>
           )}
         </CardContent>
       </Card>
