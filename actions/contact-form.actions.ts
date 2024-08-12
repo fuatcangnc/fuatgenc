@@ -7,11 +7,19 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { sendEmail } from "@/utils/nodemailer";
 
+
+
 export async function createContactForm(formData: FormData) {
   const name = formData.get('name') as string;
   const message = formData.get('message') as string;
+  const recaptchaToken = formData.get('recaptchaToken') as string;
 
   try {
+    const isHuman = await verifyRecaptcha(recaptchaToken);
+    if (isHuman === false) {
+      return { success: false, message: 'reCAPTCHA doğrulaması başarısız oldu. Lütfen tekrar deneyin.' };
+    }
+
     const validatedData = contactFormSchema.parse({ name, message });
     // Veritabanına kaydet
     await db.insert(contactForm).values({
@@ -67,4 +75,14 @@ export async function deleteContactForm(id: number): Promise<boolean> {
     .returning();
   revalidatePath('/contact');
   return !!deletedForm;
+}
+
+async function verifyRecaptcha(token: string) {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+
+  const response = await fetch(verificationUrl, { method: 'POST' });
+  const data = await response.json();
+
+  return data.success;
 }

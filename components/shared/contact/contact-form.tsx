@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from '@/components/ui/textarea';
 import { createContactForm } from '@/actions/contact-form.actions';
 import { useFormStatus } from 'react-dom'
+import { useReCaptcha } from 'next-recaptcha-v3'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -24,13 +25,23 @@ function SubmitButton() {
 
 function ContactForm() {
   const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const { executeRecaptcha } = useReCaptcha()
 
   async function handleSubmit(formData: FormData) {
     setFormStatus('idle');
-    const result = await createContactForm(formData);
-    if (result.success) {
-      setFormStatus('success');
-    } else {
+    
+    try {
+      const token = await executeRecaptcha('contact_form')
+      formData.append('recaptchaToken', token);
+
+      const result = await createContactForm(formData);
+      if (result.success) {
+        setFormStatus('success');
+      } else {
+        setFormStatus('error');
+      }
+    } catch (error) {
+      console.error('reCAPTCHA or form submission error:', error);
       setFormStatus('error');
     }
   }
