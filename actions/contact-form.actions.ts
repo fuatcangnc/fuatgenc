@@ -11,6 +11,7 @@ import { sendEmail } from "@/utils/nodemailer";
 
 export async function createContactForm(formData: FormData) {
   const name = formData.get('name') as string;
+  const email = formData.get('email') as string;
   const message = formData.get('message') as string;
   const recaptchaToken = formData.get('recaptchaToken') as string;
 
@@ -20,10 +21,11 @@ export async function createContactForm(formData: FormData) {
       return { success: false, message: 'reCAPTCHA doğrulaması başarısız oldu. Lütfen tekrar deneyin.' };
     }
 
-    const validatedData = contactFormSchema.parse({ name, message });
+    const validatedData = contactFormSchema.parse({ name, email, message });
     // Veritabanına kaydet
     await db.insert(contactForm).values({
       name: validatedData.name,
+      email: validatedData.email,
       message: validatedData.message
     });
     
@@ -31,8 +33,8 @@ export async function createContactForm(formData: FormData) {
     const emailResult = await sendEmail({
       to: process.env.CONTACT_FORM_RECIPIENT || '',
       subject: 'Yeni İletişim Formu Mesajı',
-      text: `İsim: ${name}\nMesaj: ${message}`,
-      html: `<h1>Yeni İletişim Formu Mesajı</h1><p><strong>İsim:</strong> ${name}</p><p><strong>Mesaj:</strong> ${message}</p>`,
+      text: `İsim: ${name}\nE-posta: ${email}\nMesaj: ${message}`,
+      html: `<h1>Yeni İletişim Formu Mesajı</h1><p><strong>İsim:</strong> ${name}</p><p><strong>E-posta:</strong> ${email}</p><p><strong>Mesaj:</strong> ${message}</p>`,
     });
 
     if (!emailResult.success) {

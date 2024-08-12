@@ -212,6 +212,7 @@ export type NewCategory = typeof categories.$inferInsert;
 export const contactForm = pgTable('contact_form', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
+  email: text('email').notNull(),
   message: text('message').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

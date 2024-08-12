@@ -57,9 +57,16 @@ function ContactFormContent() {
             Sadece 24 Saat İçerisinde Cevap Vereceğimden. Hiç Şüpheniz Olmasın.
           </p>
           <form action={handleSubmit} className="space-y-4 flex flex-col items-center">
+            
             <Input
               name="name"
               placeholder="Adınız"
+              className="w-full rounded-none"
+            />
+            <Input
+              name="email"
+              type="email"
+              placeholder="E-posta Adresiniz"
               className="w-full rounded-none"
             />
             <Textarea
