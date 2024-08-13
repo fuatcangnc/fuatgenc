@@ -56,7 +56,7 @@ async function sendNewsletterEmails(post: Post) {
         <h1>Yeni Blog Yazımız Yayında!</h1>
         <p>Merhaba,</p>
         <p>"${post.title}" başlıklı yeni blog yazımız yayınlandı.</p>
-        <p>Okumak için <a href="${process.env.NEXT_PUBLIC_SITE_URL}/blog/${post.slug}">buraya tıklayın</a>.</p>
+        <p>Okumak için <a href="${process.env.SITE_URL}/blog/${post.slug}">buraya tıklayın</a>.</p>
         <p>İyi okumalar!</p>
         `
       );
