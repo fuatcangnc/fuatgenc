@@ -1,8 +1,6 @@
 "use client"
 
-// components/HomeSidebar.tsx
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +12,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import Avatar from './home/avatar';
+import { subscribeToNewsletter } from '@/actions/newsletter.actions';
 
 const socialMediaData = [
     { name: 'Facebook', icon: FacebookLogo, url: 'https://facebook.com', iconColor: 'text-blue-600' },
@@ -22,7 +21,7 @@ const socialMediaData = [
     { name: 'Instagram', icon: InstagramLogo, url: 'https://instagram.com', iconColor: 'text-pink-600' },
     { name: 'YouTube', icon: YoutubeLogo, url: 'https://youtube.com', iconColor: 'text-red-600' },
     { name: 'Vimeo', icon: Video, url: 'https://vimeo.com', iconColor: 'text-cyan-500' },
-  ];
+];
 
 const exploreMoreData = [
   {
@@ -57,11 +56,33 @@ const exploreMoreData = [
 ];
 
 function HomeSidebar() {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMessage('');
+  
+    try {
+      const result = await subscribeToNewsletter({ email });
+      if (result.success) {
+        setMessage(result.message);
+        setEmail('');
+      } else {
+        setMessage(result.message);
+      }
+    } catch (error) {
+      setMessage('Bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <aside className="space-y-8 text-[13px]">
       <Avatar />
-
-      
 
       <div>
         <ul className="grid grid-cols-2 gap-2">
@@ -82,6 +103,7 @@ function HomeSidebar() {
           ))}
         </ul>
       </div>
+
       <Card className='border'>
         <CardHeader>
           <p className="text-xl font-bold">Bültenimize Katılın</p>
@@ -90,10 +112,28 @@ function HomeSidebar() {
           <p className="mb-4 text-gray-600">
             Hemen ücretsiz üye olun ve yeni güncellemelerden haberdar olan ilk kişi olun.
           </p>
-          <form className="space-y-4">
-            <Input type="email" placeholder="E-Posta Adresiniz" className="min-h-[45px]" />
-            <Button className="w-full bg-red-500 hover:bg-red-600 text-white min-h-[45px]">Abone Ol</Button>
+          <form className="space-y-4" onSubmit={handleSubscribe}>
+            <Input 
+              type="email" 
+              placeholder="E-Posta Adresiniz" 
+              className="min-h-[45px]" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Button 
+              type="submit" 
+              className="w-full bg-red-500 hover:bg-red-600 text-white min-h-[45px]"
+              disabled={isLoading}
+            >
+              {isLoading ? 'İşleniyor...' : 'Abone Ol'}
+            </Button>
           </form>
+          {message && (
+            <p className={`mt-2 text-sm ${message.includes('başarıyla') ? 'text-green-600' : 'text-red-600'}`}>
+              {message}
+            </p>
+          )}
         </CardContent>
       </Card>
 

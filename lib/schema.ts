@@ -223,3 +223,15 @@ export const contactForm = pgTable('contact_form', {
 
 export type ContactForm = typeof contactForm.$inferSelect;
 export type NewContactForm = typeof contactForm.$inferInsert;
+
+
+export const newsletter = pgTable('newsletter', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  isSubscribed: boolean('is_subscribed').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export type Newsletter = typeof newsletter.$inferSelect;
+export type NewNewsletter = typeof newsletter.$inferInsert;
