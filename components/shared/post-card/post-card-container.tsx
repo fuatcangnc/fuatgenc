@@ -1,24 +1,28 @@
 import React from 'react'
 import { PostCard } from '../post-card'
 import { getPosts } from '@/actions/posts.actions'
+import LoadMoreButton from './load-more-button'
+
+const POSTS_PER_PAGE = 4;
 
 async function PostCardContainer() {
-  const posts = await getPosts(4); // İlk 4 postu getir
+  const initialPosts = await getPosts(POSTS_PER_PAGE);
 
   return (
     <div className="space-y-4">
-      {posts.map((post) => (
+      {initialPosts.map((post) => (
         <PostCard
-          key={post?.id}
-          imageUrl={post?.featuredImage || '/default-image.jpg'}
-          // @ts-ignore: 'category' does not exist on type '{ id?: number; title?: string; ... }'
-          category={post?.category || 'Genel'}
-          title={post?.title}
-          excerpt={post?.excerpt || ''}
-          createdAt={post?.createdAt}
-          slug={post?.slug}
+          key={post.id}
+          imageUrl={post.featuredImage || '/default-image.jpg'}
+          category={post.categories || []}
+          categorySlug={post.categorySlug || ''}
+          title={post.title}
+          excerpt={post.excerpt || ''}
+          createdAt={post.createdAt}
+          slug={post.slug}
         />
       ))}
+      <LoadMoreButton initialPostCount={initialPosts.length} />
     </div>
   )
 }

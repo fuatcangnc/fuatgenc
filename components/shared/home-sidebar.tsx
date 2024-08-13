@@ -59,22 +59,11 @@ const exploreMoreData = [
 function HomeSidebar() {
   return (
     <aside className="space-y-8 text-[13px]">
-      <Card className='border'>
-        <CardHeader>
-          <p className="text-xl font-bold">Bültenimize Katılın</p>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-4 text-gray-600">
-            Hemen ücretsiz üye olun ve yeni güncellemelerden haberdar olan ilk kişi olun.
-          </p>
-          <form className="space-y-4">
-            <Input type="email" placeholder="E-Posta Adresiniz" className="min-h-[45px]" />
-            <Button className="w-full bg-red-500 hover:bg-red-600 text-white min-h-[45px]">Abone Ol</Button>
-          </form>
-        </CardContent>
-      </Card>
+      <Avatar />
 
-      <nav aria-label="Social Media Links">
+      
+
+      <div>
         <ul className="grid grid-cols-2 gap-2">
           {socialMediaData.map((item, index) => (
             <li key={index}>
@@ -92,9 +81,22 @@ function HomeSidebar() {
             </li>
           ))}
         </ul>
-      </nav>
+      </div>
+      <Card className='border'>
+        <CardHeader>
+          <p className="text-xl font-bold">Bültenimize Katılın</p>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4 text-gray-600">
+            Hemen ücretsiz üye olun ve yeni güncellemelerden haberdar olan ilk kişi olun.
+          </p>
+          <form className="space-y-4">
+            <Input type="email" placeholder="E-Posta Adresiniz" className="min-h-[45px]" />
+            <Button className="w-full bg-red-500 hover:bg-red-600 text-white min-h-[45px]">Abone Ol</Button>
+          </form>
+        </CardContent>
+      </Card>
 
-      <Avatar />
     </aside>
   );
 }

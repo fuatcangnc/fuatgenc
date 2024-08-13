@@ -204,6 +204,9 @@ export const postCategoriesRelations = relations(postCategories, ({ one }) => ({
   }),
 }));
 
+export const postsRelations = relations(posts, ({ many }) => ({
+  categories: many(postCategories)
+}));
 
 
 export type Category = typeof categories.$inferSelect;

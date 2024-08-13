@@ -1,7 +1,6 @@
 // app/page.tsx
 import HomeSidebar from "@/components/shared/home-sidebar";
 import WordPressLanding from "@/components/shared/home/hero-content";
-import PaginationComponent from "@/components/shared/pagination";
 import FAQAccordion from "@/components/shared/home/faq-accordion";
 import PostCardContainer from "@/components/shared/post-card/post-card-container";
 export default function Home() {
@@ -11,9 +10,8 @@ export default function Home() {
       <WordPressLanding />
       {/* Ana içerik alanı */}
       <div className="flex flex-col lg:flex-row lg:gap-x-16">
-        <div className="lg:w-[70%]">
+        <div className="lg:w-[70%] space-y-8">
           <PostCardContainer/>
-            <PaginationComponent currentPage={1} totalPages={5} />
             <FAQAccordion/>
 
         </div>

@@ -19,10 +19,10 @@ function WordPressLanding() {
       <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-12 p-6 items-center">
         <div>
           <CardHeader className="px-0">
-            <h1 className="tracking-tight text-3xl font-bold mb-2">
+            <h1 className="tracking-tight text-3xl font-bold mb-2 leading-normal">
               Gerçek WordPress Uzmanlarından WordPress’in İnceliklerini Öğrenin
             </h1>
-            <CardDescription>
+            <CardDescription className="leading-relaxed text-[16px] text-[#1a1a1a]">
               25 milyondan fazla web sitesi tarafından kullanılan çeşitli
               WordPress markaları oluşturduk. Başladığımızda bilmeyi dilediğimiz
               dersleri öğrenmek için abone olun.
@@ -45,10 +45,12 @@ function WordPressLanding() {
           </div>
 
           <form className="space-y-4 mt-6">
-            <Input placeholder="Full Name" />
-            <Input placeholder="Your Email Address" />
-            <Button className="w-full bg-[#02CA96] hover:bg-orange-600 text-white py-4">
-              Get Our Free WordPress Training
+            <div className="flex flex-col md:flex-row gap-4">
+            <Input placeholder="Ad Soyad" />
+            <Input placeholder="Email adresiniz" />
+            </div>
+            <Button className="w-full bg-[#02CA96] hover:bg-orange-600 text-[#000] py-4 ">
+            Ücretsiz SEO & WordPress E-Kitabı İndir
             </Button>
           </form>
         </div>

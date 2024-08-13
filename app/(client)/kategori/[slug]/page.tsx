@@ -18,12 +18,14 @@ export default async function Kategori({ params }: { params: { slug: string } })
   ];
 
   return (
+    
     <section className='container max-w-7xl mx-auto'>
       <div className="category-wrap md:p-8 p-4 border my-8">
         <Breadcrumb items={breadcrumbItems} />
         <h1 className='font-bold text-3xl mb-2'>{category.name}</h1>
         <p>{category.description}</p>
       </div>
+      
       <div className='flex flex-col lg:flex-row lg:gap-x-16'>
         <div className='lg:w-[70%]'>
           {postsError ? (

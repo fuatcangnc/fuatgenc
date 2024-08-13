@@ -11,7 +11,7 @@ export default async function KategoriListesi() {
         {categories.map((category) => (
           <Link 
             key={category.id} 
-            href={`/kategori/${category.slug}`}
+            href={`/${category.slug}`}
             className='p-4 border rounded-lg hover:bg-gray-100 transition-colors'
           >
             <h2 className='text-xl font-semibold'>{category.name}</h2>

@@ -2,7 +2,7 @@
 
 import { eq, desc } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { posts, postCategories } from '@/lib/schema';
+import { posts, postCategories, categories } from '@/lib/schema';
 import { Post, createPostSchema, updatePostSchema } from '@/schemas/postsSchema';
 
 export async function createPost(postData: Omit<Post, "id" | "createdAt" | "updatedAt">, categoryIds: number[]) {
@@ -81,13 +81,23 @@ export async function getPostById(id: number): Promise<Post | null> {
 
 export async function getPosts(limitParam?: number): Promise<Post[]> {
   try {
-    const query = db.select()
-      .from(posts)
-      .orderBy(desc(posts.createdAt))
-      .limit(limitParam ?? Number.MAX_SAFE_INTEGER);
+    const result = await db.query.posts.findMany({
+      limit: limitParam,
+      orderBy: [desc(posts.createdAt)],
+      with: {
+        categories: {
+          with: {
+            category: true
+          }
+        }
+      }
+    });
 
-    const result = await query;
-    return result;
+    return result.map(post => ({
+      ...post,
+      categories: post.categories.map(pc => pc.category.name),
+      categorySlug: post.categories[0]?.category.slug || ''
+    }));
   } catch (error) {
     console.error('Error fetching posts:', error);
     throw error;
