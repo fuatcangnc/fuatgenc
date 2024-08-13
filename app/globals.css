@@ -152,3 +152,7 @@
   padding-left: 2em;
   margin-bottom: 1.1em;
 }
+.header-button {
+  width: 100%;
+  justify-content: flex-start;
+}

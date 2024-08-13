@@ -17,7 +17,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         <TopBar />
         <main className={`flex overflow-x-hidden bg-[#F1F5F9] dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300`}>
           <Sidebar />
-          <div className="p-12 max-w-7xl">
+          <div className="w-full mx-auto max-w-7xl">
             {children}
           </div>
         </main>

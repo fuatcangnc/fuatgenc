@@ -50,8 +50,23 @@ export async function createContactForm(formData: FormData) {
   }
 }
 
-export async function getContactForms(): Promise<ContactForm[]> {
-  return db.select().from(contactForm).orderBy(contactForm.createdAt);
+export async function getContactForms(): Promise<Mesaj[]> {
+  const forms = await db.select().from(contactForm).orderBy(contactForm.createdAt);
+  return forms.map(form => ({
+    id: form.id,
+    name: form.name,
+    email: form.email,
+    createdAt: form.createdAt.toISOString(),
+    status: form.status ? "Okundu" : "Okunmadı"
+  }));
+}
+
+interface Mesaj {
+  id: number;
+  name: string;
+  email: string;
+  createdAt: string;
+  status: "Okundu" | "Okunmadı";
 }
 
 export async function getContactForm(id: number): Promise<ContactForm | null> {
