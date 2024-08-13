@@ -115,7 +115,7 @@ function HomeSidebar() {
           <form className="space-y-4" onSubmit={handleSubscribe}>
             <Input 
               type="email" 
-              placeholder="E-Mail Adresiniz" 
+              placeholder="E-Posta Adresiniz" 
               className="min-h-[45px]" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
