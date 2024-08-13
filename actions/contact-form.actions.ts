@@ -18,7 +18,7 @@ export async function createContactForm(formData: FormData) {
   try {
     const isHuman = await verifyRecaptcha(recaptchaToken);
     if (isHuman === false) {
-      return { success: false, message: 'reCAPTCHA doğrulaması başarısız oldu. Lütfen tekrar deneyin.' };
+      return { success: false, message: 'reCAPTCHA  doğrulaması başarısız oldu. Lütfen tekrar deneyin.' };
     }
 
     const validatedData = contactFormSchema.parse({ name, email, message });
