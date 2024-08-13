@@ -2,8 +2,9 @@
 
 import { eq, desc } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { posts, postCategories, categories } from '@/lib/schema';
+import { posts, postCategories, categories, newsletter } from '@/lib/schema';
 import { Post, createPostSchema, updatePostSchema } from '@/schemas/postsSchema';
+import { sendToNewsletterEmails } from '@/utils/email';
 
 export async function createPost(postData: Omit<Post, "id" | "createdAt" | "updatedAt">, categoryIds: number[]) {
   try {
@@ -32,10 +33,38 @@ export async function createPost(postData: Omit<Post, "id" | "createdAt" | "upda
     console.log('New post created:', newPost); // Debugging için
     console.log('Categories added:', categoryIds); // Debugging için
 
+    // Abonelere e-posta gönder
+    await sendNewsletterEmails(newPost);
+
     return newPost as Post;
   } catch (error) {
     console.error('Error creating post:', error);
     throw error;
+  }
+}
+async function sendNewsletterEmails(post: Post) {
+  try {
+    // Bültene kayıtlı tüm kullanıcıları al
+    const subscribers = await db.select().from(newsletter).where(eq(newsletter.isSubscribed, true));
+
+    // Her bir aboneye e-posta gönder
+    for (const subscriber of subscribers) {
+      await sendToNewsletterEmails(
+        subscriber.email,
+        `Yeni Blog Yazısı: ${post.title}`,
+        `
+        <h1>Yeni Blog Yazımız Yayında!</h1>
+        <p>Merhaba,</p>
+        <p>"${post.title}" başlıklı yeni blog yazımız yayınlandı.</p>
+        <p>Okumak için <a href="${process.env.NEXT_PUBLIC_SITE_URL}/blog/${post.slug}">buraya tıklayın</a>.</p>
+        <p>İyi okumalar!</p>
+        `
+      );
+    }
+    console.log(`Newsletters sent to ${subscribers.length} subscribers`);
+  } catch (error) {
+    console.error('Error sending newsletter emails:', error);
+    // Burada hata fırlatmıyoruz çünkü e-posta gönderimi başarısız olsa bile post oluşturma işleminin tamamlanmasını istiyoruz
   }
 }
 export async function updatePost(id: number, postData: Partial<Post>, categoryIds?: number[]) {
