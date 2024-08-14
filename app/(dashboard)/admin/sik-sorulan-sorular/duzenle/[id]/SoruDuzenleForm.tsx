@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { sikSorulanSorularSchema } from '@/schemas/faqSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -18,33 +19,68 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { useRouter } from 'next/navigation'
+import { useToast } from "@/components/ui/use-toast"
 
 type Soru = z.infer<typeof sikSorulanSorularSchema>
 
 export default function SoruDuzenleForm({ soru, updateSoru }: { soru: Soru, updateSoru: (id: number, data: Partial<Soru>) => Promise<any> }) {
   const router = useRouter()
+  const { toast } = useToast()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const form = useForm<Soru>({
     resolver: zodResolver(sikSorulanSorularSchema),
     defaultValues: soru,
   })
 
   async function onSubmit(values: Soru) {
+    console.log('onSubmit çağrıldı:', values)
+    setIsSubmitting(true)
     try {
-      const result = await updateSoru(soru.id, values)
+      const { id, createdAt, updatedAt, ...updateData } = values
+      const result = await updateSoru(soru.id, updateData)
+      console.log('Güncelleme sonucu:', result)
       if (result.success) {
+        toast({
+          title: "Başarılı",
+          description: "Soru başarıyla güncellendi.",
+        })
         router.push('/admin/sik-sorulan-sorular/tum-sorular')
         router.refresh()
       } else {
-        console.error('Soru güncellenirken bir hata oluştu:', result.error)
+        toast({
+          title: "Hata",
+          description: result.error || 'Soru güncellenirken bir hata oluştu.',
+          variant: "destructive",
+        })
       }
     } catch (error) {
       console.error('Form gönderilirken bir hata oluştu:', error)
+      toast({
+        title: "Hata",
+        description: 'Form gönderilirken bir hata oluştu.',
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log('Form submit edildi')
+    const isValid = await form.trigger()
+    if (isValid) {
+      const values = form.getValues()
+      await onSubmit(values)
+    } else {
+      console.log('Form geçersiz')
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <FormField
           control={form.control}
           name="soruAdi"
@@ -52,7 +88,7 @@ export default function SoruDuzenleForm({ soru, updateSoru }: { soru: Soru, upda
             <FormItem>
               <FormLabel>Soru</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Soruyu girin" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -65,7 +101,7 @@ export default function SoruDuzenleForm({ soru, updateSoru }: { soru: Soru, upda
             <FormItem>
               <FormLabel>İçerik</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <Textarea placeholder="Cevabı girin" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -91,7 +127,9 @@ export default function SoruDuzenleForm({ soru, updateSoru }: { soru: Soru, upda
             </FormItem>
           )}
         />
-        <Button type="submit">Güncelle</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Güncelleniyor...' : 'Güncelle'}
+        </Button>
       </form>
     </Form>
   )

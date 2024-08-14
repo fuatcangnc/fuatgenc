@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { createSikSorulanSoru } from '@/actions/faq.actions'
 import { sikSorulanSorularSchema } from '@/schemas/faqSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,9 +20,13 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { useRouter } from 'next/navigation'
+import { useToast } from "@/components/ui/use-toast"
 
 export default function YeniSoruEkle() {
   const router = useRouter()
+  const { toast } = useToast()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const form = useForm<z.infer<typeof sikSorulanSorularSchema>>({
     resolver: zodResolver(sikSorulanSorularSchema),
     defaultValues: {
@@ -32,17 +37,35 @@ export default function YeniSoruEkle() {
   })
 
   async function onSubmit(values: z.infer<typeof sikSorulanSorularSchema>) {
+    console.log('Form gönderiliyor:', values)
+    setIsSubmitting(true)
     try {
       const result = await createSikSorulanSoru(values)
+      console.log('Oluşturma sonucu:', result)
       if (result.success) {
-        router.push('/admin/sik-sorulan-sorular/tum-sorular')
+        toast({
+          title: "Başarılı",
+          description: "Soru başarıyla eklendi.",
+        })
         router.refresh()
+        router.push('/admin/sik-sorulan-sorular')
       } else {
-        console.error('Soru eklenirken bir hata oluştu:', result.error)
-        // Hata mesajını kullanıcıya göstermek için bir state kullanabilirsiniz
+        console.error('Hata detayı:', result.error)
+        toast({
+          title: "Hata",
+          description: result.error || 'Soru eklenirken bir hata oluştu.',
+          variant: "destructive",
+        })
       }
     } catch (error) {
       console.error('Form gönderilirken bir hata oluştu:', error)
+      toast({
+        title: "Hata",
+        description: 'Form gönderilirken bir hata oluştu.',
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -97,7 +120,9 @@ export default function YeniSoruEkle() {
               </FormItem>
             )}
           />
-          <Button type="submit">Soru Ekle</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Ekleniyor...' : 'Soru Ekle'}
+          </Button>
         </form>
       </Form>
     </div>

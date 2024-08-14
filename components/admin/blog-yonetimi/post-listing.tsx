@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button"
 import { Pencil, Trash2, Plus } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Skeleton } from "@/components/ui/skeleton" // Yeni import
 
 export function PostListing() {
   const [posts, setPosts] = useState<Post[]>([])
+  const [isLoading, setIsLoading] = useState(true) // Yeni state
   const { toast } = useToast()
 
   useEffect(() => {
@@ -20,6 +22,7 @@ export function PostListing() {
   }, [])
 
   const fetchPosts = async () => {
+    setIsLoading(true) // Yükleme başladığında
     try {
       const fetchedPosts = await getPosts()
       setPosts(fetchedPosts)
@@ -30,6 +33,8 @@ export function PostListing() {
         description: "Yazılar yüklenirken bir hata oluştu.",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false) // Yükleme bittiğinde
     }
   }
 
@@ -149,13 +154,21 @@ export function PostListing() {
           </Button>
         </Link>
       </div>
-      <DataTable 
-        columns={columns} 
-        data={posts} 
-        searchColumn="title"
-        searchPlaceholder="Yazılarda ara..."
-        columnTitles={columnTitles}
-      />
+      {isLoading ? (
+        <div className="space-y-4">
+          {[...Array(5)].map((_, index) => (
+            <Skeleton key={index} className="h-12 w-full" />
+          ))}
+        </div>
+      ) : (
+        <DataTable 
+          columns={columns} 
+          data={posts} 
+          searchColumn="title"
+          searchPlaceholder="Yazılarda ara..."
+          columnTitles={columnTitles}
+        />
+      )}
     </div>
   )
 }

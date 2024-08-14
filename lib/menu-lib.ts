@@ -113,19 +113,19 @@ export function getMenuList(pathname: string): Group[] {
         },
         {
           href: "",
-          label: "Sıkça Sorulan Sorular",
-          active: pathname.includes("/admin/sik-sorulan-sorular"),
+          label: "Mesajlar",
+          active: pathname.includes("/admin/mesajlar"),
           icon: Question,
           submenus: [
             {
-              href: "/admin/sik-sorulan-sorular/tum-sorular",
-              label: "Tüm Sorular",
-              active: pathname === "/admin/sik-sorulan-sorular/tum-sorular"
+              href: "/admin/mesajlar",
+              label: "Mesajlar",
+              active: pathname === "/admin/mesajlar"
             },
             {
-              href: "/admin/sik-sorulan-sorular/yeni-soru-ekle",
-              label: "Yeni Soru Ekle",
-              active: pathname === "/admin/sik-sorulan-sorular/yeni-soru-ekle"
+              href: "/admin/mesajlar/newsletter",
+              label: "Newsletter",
+              active: pathname === "/admin/mesajlar/newsletter"
             },
           ]
         },
@@ -155,6 +155,10 @@ export function getMenuList(pathname: string): Group[] {
               href: "/admin/musteri-yorumlari",
               label: "Müşteri Yorumları",
               active: pathname === "/admin/musteri-yorumlari"
+            },,{
+              href: "/admin/sik-sorulan-sorular",
+              label: "Sık Sorulan Sorular",
+              active: pathname === "/admin/sik-sorulan-sorular"
             },
           ]
         },

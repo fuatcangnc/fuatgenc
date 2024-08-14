@@ -18,10 +18,12 @@ import { toast } from "@/components/ui/use-toast"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { categorySchema, CategorySchema } from '@/schemas/categorySchema'
+import { Skeleton } from "@/components/ui/skeleton" // Yeni import
 
 function NewCategory() {
   const router = useRouter()
   const [isEditingSlug, setIsEditingSlug] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(true) // Yeni state
 
   const { control, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
@@ -39,6 +41,15 @@ function NewCategory() {
 
   const name = watch('name')
   const slug = watch('slug')
+
+  React.useEffect(() => {
+    // Simüle edilmiş yükleme süresi
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   React.useEffect(() => {
     if (!isEditingSlug && name) {
@@ -98,6 +109,26 @@ function NewCategory() {
         variant: "destructive",
       })
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex max-w-[70%]">
+        <Sidebar />
+        <Card className="flex-1 m-4">
+          <CardHeader>
+            <Skeleton className="h-8 w-1/3" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[...Array(10)].map((_, index) => (
+                <Skeleton key={index} className="h-10 w-full" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (

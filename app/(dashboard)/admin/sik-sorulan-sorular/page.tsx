@@ -1,9 +1,12 @@
-import React from 'react'
+import SoruListesi from '@/app/(dashboard)/admin/sik-sorulan-sorular/tum-sorular/SoruListesi'
 
-function SikSorulanSorular() {
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+export default function SikSorulanSorularPage() {
   return (
-    <div>SikSorulanSorular</div>
+    <div className="container mx-auto p-4">
+      <SoruListesi />
+    </div>
   )
 }
-
-export default SikSorulanSorular
