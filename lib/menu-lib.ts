@@ -1,4 +1,4 @@
-import { Folders, Translate,File,Question } from "@phosphor-icons/react";
+import { Folders, Translate,File,Question,Plug } from "@phosphor-icons/react";
 import {
   Tag,
   Users,
@@ -184,6 +184,35 @@ export function getMenuList(pathname: string): Group[] {
             }
           ]
         },
+        {
+          href: "",
+          label: "Portfolyo",
+          icon: Question,
+          submenus: [
+            {
+              href: "/admin/hizmetler",
+              label: "Hizmetler",
+              active: pathname === "/admin/hizmetler"
+            },
+            {
+              href: "/admin/iletisim-ayarlari",
+              label: "İletişim Ayarları",
+              active: pathname === "/admin/iletisim-ayarlari"
+            },
+            {
+              href: "/admin/sosyal-medya-yonetimi",
+              label: "Sosyal Medya Yönetimi",
+              active: pathname === "/admin/sosyal-medya-yonetimi"
+            }
+          ]
+        },
+          {
+            href: "/admin/eklentiler",
+            label: "Eklentiler",
+            active: pathname.includes("/admin/eklentiler"),
+            icon: Plug,
+            submenus: []
+          },
       ]
     },
     {

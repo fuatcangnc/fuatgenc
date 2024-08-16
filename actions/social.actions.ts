@@ -34,15 +34,21 @@ export async function addSocialMedia(formData: FormData): Promise<{ success: boo
     return { success: false, error: 'An unexpected error occurred' };
   }
 }
+
 export async function getSocialMedia() {
   try {
     const socialMedia = await db.select().from(socialMediaTable);
-    return socialMedia;
+    return socialMedia.map(item => ({
+      id: item.id,
+      icon: String(item.icon),  // Veriyi düz bir string olarak dönüştürme
+      social_link: String(item.social_link),  // Veriyi düz bir string olarak dönüştürme
+    }));
   } catch (error) {
     console.error('Failed to get social media:', error);
     return [];
   }
 }
+
 
 export async function updateSocialMedia(id: number, formData: FormData) {
     try {

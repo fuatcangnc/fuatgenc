@@ -8,6 +8,7 @@ import {
   varchar,
   serial,
   jsonb,
+  date,
 } from "drizzle-orm/pg-core"
 import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
@@ -57,6 +58,8 @@ export const googleFormSchema = pgTable("google_forms", {
 export type GoogleForm = typeof googleFormSchema.$inferSelect;
 export type NewGoogleForm = typeof googleFormSchema.$inferInsert;
 
+
+
 export const whatsAppForms = pgTable('whatsapp_forms', {
   id: serial('id').primaryKey(),
   whatsappMessage: text('whatsapp_message').notNull(),
@@ -82,13 +85,13 @@ export const sikSorulanSorular = pgTable('sik_sorulan_sorular', {
 export type SikSorulanSoru = InferSelectModel<typeof sikSorulanSorular>;
 export type NewSikSorulanSoru = InferInsertModel<typeof sikSorulanSorular>;
 
-export const projects = pgTable("projects", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  status: varchar("status", { length: 20 }).notNull().default("active"),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date"),
-  image: text("image").notNull(), 
+export const projects = pgTable('projects', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  status: varchar('status', { length: 5 }).notNull().default('Aktif'),
+  startDate: date('start_date').notNull(),
+  endDate: date('end_date'),
+  image: varchar('image', { length: 255 }),
 });
 
 export type Project = typeof projects.$inferSelect;
