@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Drawer from "./drawer";
+import { XLogo } from "@phosphor-icons/react";
 
 const Navbar: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -39,10 +40,10 @@ const Navbar: React.FC = () => {
                 href="#"
                 target="_black"
                 rel="nofollow noopener"
-                title="Twitter"
+                title="X"
                 className="w-[42px] h-[42px] bg-[#222222] rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
               >
-                <Twitter className="text-white w-5 h-5" />
+                <XLogo className="text-white w-5 h-5" />
               </Link>
             </li>
             <li>
@@ -54,17 +55,6 @@ const Navbar: React.FC = () => {
                 className="w-[42px] h-[42px] bg-[#222222] rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
               >
                 <Instagram className="text-white w-5 h-5" />
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                target="_black"
-                rel="nofollow noopener"
-                title="Video"
-                className="w-[42px] h-[42px] bg-[#222222] rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
-              >
-                <Video className="text-white w-5 h-5" />
               </Link>
             </li>
           </ul>

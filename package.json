@@ -40,6 +40,7 @@
     "bcrypt-ts": "^5.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "disqus-react": "^1.1.5",
     "dompurify": "^3.1.6",
     "drizzle-orm": "^0.32.2",
     "embla-carousel-react": "^8.1.8",

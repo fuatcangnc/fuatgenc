@@ -8,7 +8,9 @@ import SocialShare from "@/components/shared/single-post/social-share";
 import HomeSidebar from '@/components/shared/home-sidebar';
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
+
 const ClientSideContent = dynamic(() => import('./ClientSideContent'), { ssr: false });
+const DisqusComments = dynamic(() => import('@/components/shared/single-post/disqus-comments'), { ssr: false });
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const post = await getPostBySlug(params.slug);
@@ -46,7 +48,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     }
   };
 
-  const shareUrl = `${process.env.SITE_URL}/${post.slug}`; // Replace with your actual domain
+  const shareUrl = `${process.env.SITE_URL}/${post.slug}`;
   const shareText = encodeURIComponent(post.title);
 
   return (
@@ -59,19 +61,12 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row lg:gap-x-8 mt-8">
           <div className="hidden lg:flex flex-col items-center space-y-4 sticky top-4 self-start">
-            <div className="flex flex-col items-center">
-              <Link href="#comments" className="flex flex-col items-center">
-                <span className="text-xs font-semibold text-gray-600">Yorum</span>
-                <ChatCircleText weight="light" className="w-6 h-6 text-red-600" />
-                <div className="bg-red-600 rounded-full w-full px-2 py-0.5 mt-1 flex items-center justify-center">
-                  <span className="text-xs font-semibold text-white">1</span>
-                </div>
-              </Link>
-            </div>
-            <div className="w-full h-px bg-gray-300"></div>
+            
             <span className="text-xs font-semibold text-gray-600 mb-2">
               Paylaş
             </span>
+            <div className="w-full h-px bg-gray-300"></div>
+
             <Link 
               href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} 
               target="_blank" 
@@ -94,7 +89,6 @@ export default async function BlogPost({ params }: { params: { slug: string } })
                 <XLogo className="w-6 h-6 text-black" />
               </div>
             </Link>
-            
             <Link 
               href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${shareText}`} 
               target="_blank" 
@@ -143,6 +137,10 @@ export default async function BlogPost({ params }: { params: { slug: string } })
                   fetchPriority='high'
                 />
                 <ClientSideContent content={post.content} />
+              </div>
+              {/* Disqus yorumları */}
+              <div className="mt-8">
+                <DisqusComments post={{ slug: post.slug || '', title: post.title || '' }} />
               </div>
               <div className="flex space-x-4 mt-6 lg:hidden">
                 <Link
