@@ -2,7 +2,7 @@ import React from 'react'
 function Admin() {
   return (
     <div>
-            Admin Panelim
+            Admin Paneli
 
     </div>
   )
