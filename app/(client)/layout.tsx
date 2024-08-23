@@ -17,7 +17,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const generalSettings = await getGeneralSettings();
 
-  const siteTitle = generalSettings?.siteTitle || "Fuat Genc";
+  const siteTitle = generalSettings?.siteTitle || "Fuatcan Genc";
   const description = generalSettings?.tagline || "Bu bir client sayfasıdır";
   const siteIcon = generalSettings?.siteIcon;
 
