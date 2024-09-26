@@ -2,8 +2,6 @@ import { Metadata, ResolvingMetadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Footer from "@/components/shared/footer";
 import Navbar from "@/components/shared/navbar-client";
-import { getGeneralSettings } from "@/actions/general-settings.actions";
-import { getGoogleForms } from "@/actions/api-ayarlari.actions";
 import Script from "next/script";
 
 type Props = {
@@ -11,15 +9,26 @@ type Props = {
   params: { slug: string };
 };
 
+const API_URL = process.env.SITE_URL;
+
+async function getGeneralSettings() {
+  const response = await fetch(`${API_URL}/settings`);
+  if (!response.ok) {
+    console.error('Failed to fetch general settings');
+    return null;
+  }
+  return response.json();
+}
+
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const generalSettings = await getGeneralSettings();
 
-  const siteTitle = generalSettings?.siteTitle || "Fuatcan Genc";
-  const description = generalSettings?.tagline || "Bu bir client sayfasıdır";
-  const siteIcon = generalSettings?.siteIcon;
+  const siteTitle = generalSettings?.title || "Fuatcan Genc";
+  const description = generalSettings?.description || "Bu bir client sayfasıdır";
+  const siteIcon = generalSettings?.site_icon_url;
 
   const title = params.slug ? `${siteTitle} - ${params.slug}` : siteTitle;
 
@@ -35,33 +44,27 @@ export default async function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Google Forms verilerini getir
-  const googleForms = await getGoogleForms();
-  // İlk form kaydından Google Analytics ve Microsoft Clarity kodlarını al
-  const googleAnalyticsCode = googleForms[0]?.googleAnalyticsCode;
-  const microsoftClarityCode = googleForms[0]?.microsoftClarityCode;
+  const generalSettings = await getGeneralSettings();
+  const googleAnalyticsId = generalSettings?.google_analytics_id;
+  const microsoftClarityId = generalSettings?.microsoft_clarity_id;
 
   return (
     <>
-      {microsoftClarityCode && (
-        <Script
-          id="microsoft-clarity"
-          strategy="beforeInteractive"
-        >
+      <Navbar />
+      {children}
+      <Footer />
+      {googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}
+      {microsoftClarityId && (
+        <Script id="microsoft-clarity-script" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
               t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
               y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "${microsoftClarityCode}");
+            })(window, document, "clarity", "script", "${microsoftClarityId}");
           `}
         </Script>
       )}
-      <Navbar />
-      {children}
-      <Footer />
-      {/* Google Analytics kodu varsa, GoogleAnalytics bileşenini ekle */}
-      {googleAnalyticsCode && <GoogleAnalytics gaId={googleAnalyticsCode} />}
     </>
   );
 }

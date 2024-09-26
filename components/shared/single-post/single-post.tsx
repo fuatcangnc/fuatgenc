@@ -10,7 +10,6 @@ import {
   XLogo,
 } from "@phosphor-icons/react";
 import Post1 from "@/components/shared/single-post/article";
-import { Post } from '@/schemas/postsSchema';
 interface BlogDetayProps {
   // Add any necessary props here
 }

@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from '@/components/ui/textarea';
-import { createContactForm } from '@/actions/contact-form.actions';
 import { useFormStatus } from 'react-dom'
 import { ReCaptchaProvider, useReCaptcha } from 'next-recaptcha-v3'
 
@@ -33,8 +32,14 @@ function ContactFormContent() {
       const token = await executeRecaptcha('contact_form')
       formData.append('recaptchaToken', token);
 
-      const result = await createContactForm(formData);
-      if (result.success) {
+      const response = await fetch('/wp-json/contact-form-7/v1/contact-forms/123/feedback', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'mail_sent') {
         setFormStatus('success');
       } else {
         setFormStatus('error');
@@ -59,18 +64,18 @@ function ContactFormContent() {
           <form action={handleSubmit} className="space-y-4 flex flex-col items-center">
             
             <Input
-              name="name"
+              name="your-name"
               placeholder="Adınız"
               className="w-full rounded-none"
             />
             <Input
-              name="email"
+              name="your-email"
               type="email"
               placeholder="E-posta Adresiniz"
               className="w-full rounded-none"
             />
             <Textarea
-              name="message"
+              name="your-message"
               placeholder="Mesajınız"
               className="w-full rounded-none"
             />
@@ -80,7 +85,7 @@ function ContactFormContent() {
             <p className="text-green-500 mt-2">Mesajınız başarıyla gönderildi</p>
           )}
           {formStatus === 'error' && (
-            <p className="text-red-500 mt-2">Mesajınız 10 karakterden az olamaz.</p>
+            <p className="text-red-500 mt-2">Mesajınız gönderilemedi. Lütfen tekrar deneyin.</p>
           )}
         </CardContent>
       </Card>

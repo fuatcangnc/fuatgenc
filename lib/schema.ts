@@ -14,10 +14,7 @@ import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { type InferSelectModel, type InferInsertModel, relations } from 'drizzle-orm';
 import * as z from 'zod';
-import { sikSorulanSorularSchema } from '@/schemas/faqSchema';
-import { categorySchema, CategorySchema } from '@/schemas/categorySchema';
 
-export type SikSorulanSorularSchemaType = z.infer<typeof sikSorulanSorularSchema>;
 const connectionString = process.env.POSTGRES_URL!
 const pool = postgres(connectionString, { max: 1 })
 

@@ -1,15 +1,35 @@
+import React from 'react';
 import PostCardContainer from '@/components/shared/categories/post-card-container'
 import Breadcrumb from "@/components/shared/breadcrumb";
 import HomeSidebar from '@/components/shared/home-sidebar';
-import { getCategoryBySlug, getPostsByCategory } from '@/actions/category.actions';
+
+const API_URL = process.env.SITE_URL;
+
+async function getCategoryBySlug(slug: string) {
+  const response = await fetch(`${API_URL}/categories?slug=${slug}&_embed`);
+  if (!response.ok) {
+    return { category: null, error: 'Failed to fetch category' };
+  }
+  const categories = await response.json();
+  return { category: categories[0] || null, error: null };
+}
+
+async function getPostsByCategory(categoryId: number) {
+  const response = await fetch(`${API_URL}/posts?categories=${categoryId}&_embed`);
+  if (!response.ok) {
+    return { posts: [], error: 'Failed to fetch posts' };
+  }
+  return { posts: await response.json(), error: null };
+}
 
 export default async function Kategori({ params }: { params: { slug: string } }) {
   const { category, error: categoryError } = await getCategoryBySlug(params.slug);
-  const { posts, error: postsError } = await getPostsByCategory(params.slug);
-
+  
   if (categoryError || !category) {
     return <div>Kategori bulunamadı.</div>;
   }
+
+  const { posts, error: postsError } = await getPostsByCategory(category.id);
 
   const breadcrumbItems = [
     { label: "Ana Sayfa", href: "/" },
@@ -18,7 +38,6 @@ export default async function Kategori({ params }: { params: { slug: string } })
   ];
 
   return (
-    
     <section className='container max-w-7xl mx-auto'>
       <div className="category-wrap md:p-8 p-4 border my-8">
         <Breadcrumb items={breadcrumbItems} />

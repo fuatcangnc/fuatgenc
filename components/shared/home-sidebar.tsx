@@ -10,9 +10,7 @@ import {
   Video, SoundcloudLogo, SpotifyLogo, Play, Clock, XLogo
 } from "@phosphor-icons/react";
 import Link from 'next/link';
-import Image from 'next/image';
 import Avatar from './home/avatar';
-import { subscribeToNewsletter } from '@/actions/newsletter.actions';
 
 const socialMediaData = [
     { name: 'Facebook', icon: FacebookLogo, url: 'https://facebook.com', iconColor: 'text-blue-600' },
@@ -60,25 +58,7 @@ function HomeSidebar() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setMessage('');
-  
-    try {
-      const result = await subscribeToNewsletter({ email });
-      if (result.success) {
-        setMessage(result.message);
-        setEmail('');
-      } else {
-        setMessage(result.message);
-      }
-    } catch (error) {
-      setMessage('Bir hata oluştu. Lütfen tekrar deneyin.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   return (
     <aside className="space-y-8 text-[13px]">
@@ -112,7 +92,7 @@ function HomeSidebar() {
           <p className="mb-4 text-gray-600">
             Hemen ücretsiz üye olun ve yeni güncellemelerden haberdar olan ilk kişi olun.
           </p>
-          <form className="space-y-4" onSubmit={handleSubscribe}>
+          <form className="space-y-4">
             <Input 
               type="email" 
               placeholder="E-Posta Adresiniz" 

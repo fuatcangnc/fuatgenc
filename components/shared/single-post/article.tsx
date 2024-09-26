@@ -13,7 +13,6 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import SocialShare from "@/components/shared/single-post/social-share";
 import PostFooter from "./post-footer";
-import { Post } from '@/schemas/postsSchema';
 function Post1() {
   const breadcrumbItems = [
     { label: "Home", href: "/" },

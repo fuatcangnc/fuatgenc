@@ -1,5 +1,15 @@
 import Link from 'next/link';
-import { getCategories } from '@/actions/category.actions';
+
+const API_URL = process.env.SITE_URL;
+
+async function getCategories() {
+  const response = await fetch(`${API_URL}/categories?per_page=100&_fields=id,name,slug,count`);
+  if (!response.ok) {
+    console.error('Failed to fetch categories');
+    return [];
+  }
+  return response.json();
+}
 
 export default async function KategoriListesi() {
   const categories = await getCategories();
@@ -11,11 +21,11 @@ export default async function KategoriListesi() {
         {categories.map((category) => (
           <Link 
             key={category.id} 
-            href={`/${category.slug}`}
+            href={`/kategori/${category.slug}`}
             className='p-4 border rounded-lg hover:bg-gray-100 transition-colors'
           >
             <h2 className='text-xl font-semibold'>{category.name}</h2>
-            <p className='text-gray-600 mt-2'>Post Sayısı: {category.postCount}</p>
+            <p className='text-gray-600 mt-2'>Post Sayısı: {category.count}</p>
           </Link>
         ))}
       </div>

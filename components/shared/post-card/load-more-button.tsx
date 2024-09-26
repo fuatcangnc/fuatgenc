@@ -2,10 +2,18 @@
 
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { getPosts } from '@/actions/posts.actions'
 import { PostCard } from '../post-card'
 
 const POSTS_PER_PAGE = 4;
+const API_URL = process.env.NEXT_PUBLIC_SITE_URL;
+
+async function getWordPressPosts(perPage: number, offset: number = 0) {
+  const response = await fetch(`${API_URL}/posts?per_page=${perPage}&offset=${offset}&_embed`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch posts');
+  }
+  return response.json();
+}
 
 function LoadMoreButton({ initialPostCount }: { initialPostCount: number }) {
   const [posts, setPosts] = useState([]);
@@ -17,21 +25,22 @@ function LoadMoreButton({ initialPostCount }: { initialPostCount: number }) {
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
-    const nextPage = page + 1;
-    const newPosts = await getPosts(nextPage * POSTS_PER_PAGE);
-    
-    // Sadece yeni postları ekleyin
-    const actualNewPosts = newPosts.slice(posts.length + initialPostCount);
-    
-    if (actualNewPosts.length === 0) {
-      setHasMore(false);
-    } else {
-      setPosts((prevPosts) => [...prevPosts, ...actualNewPosts]);
-      setPage(nextPage);
-      setHasMore(newPosts.length === nextPage * POSTS_PER_PAGE);
+    const offset = page * POSTS_PER_PAGE;
+    try {
+      const newPosts = await getWordPressPosts(POSTS_PER_PAGE, offset);
+      
+      if (newPosts.length === 0) {
+        setHasMore(false);
+      } else {
+        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+        setPage((prevPage) => prevPage + 1);
+        setHasMore(newPosts.length === POSTS_PER_PAGE);
+      }
+    } catch (error) {
+      console.error('Error loading more posts:', error);
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (
@@ -39,12 +48,12 @@ function LoadMoreButton({ initialPostCount }: { initialPostCount: number }) {
       {posts.map((post) => (
         <PostCard
           key={post.id}
-          imageUrl={post.featuredImage || '/default-image.jpg'}
-          category={post.categories || []}
-          categorySlug={post.categorySlug || ''}
-          title={post.title}
-          excerpt={post.excerpt || ''}
-          createdAt={post.createdAt}
+          imageUrl={post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/default-image.jpg'}
+          category={post._embedded?.['wp:term']?.[0]?.map((term) => term.name) || []}
+          categorySlug={post._embedded?.['wp:term']?.[0]?.[0]?.slug || ''}
+          title={post.title.rendered}
+          excerpt={post.excerpt.rendered}
+          createdAt={post.date}
           slug={post.slug}
         />
       ))}
